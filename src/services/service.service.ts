@@ -7,7 +7,7 @@ import { buildQueryString } from "@/lib/buildQueryString";
 
 export function getAllServices(query: TQuery) {
   const params = buildQueryString(query);
-  return nextServerFetch<Service[]>(`/api/services?${params}`, {
+  return nextServerFetch<Service[]>(`/api/services${params}`, {
     auth: "none",
     next: { tags: [CACHE_TAGS.services], revalidate: CACHE_TIME.fiveMinutes },
   });

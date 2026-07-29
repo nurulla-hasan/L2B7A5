@@ -1,18 +1,38 @@
-import { Bolt, Hammer, PaintBucket, Sparkles, Wrench, Zap } from "lucide-react";
-
+import { getAllCategories } from "@/services/category.service";
 import { SectionWrapper } from "@/components/common/section-wrapper";
 import { SectionHeading } from "@/components/common/section-heading";
+import Link from "next/link";
+import {
+  Bolt,
+  Hammer,
+  PaintBucket,
+  Sparkles,
+  Wrench,
+  Zap,
+  Wind,
+} from "lucide-react";
+import type { Category } from "@/interface/category";
 
-const categories = [
-  { label: "Electrical", icon: Zap, count: "45 technicians" },
-  { label: "Plumbing", icon: Wrench, count: "62 technicians" },
-  { label: "Cleaning", icon: Sparkles, count: "38 technicians" },
-  { label: "Painting", icon: PaintBucket, count: "27 technicians" },
-  { label: "Carpentry", icon: Hammer, count: "19 technicians" },
-  { label: "AC Repair", icon: Bolt, count: "31 technicians" },
-];
+const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  Electrical: Zap,
+  Plumbing: Wrench,
+  Cleaning: Sparkles,
+  Painting: PaintBucket,
+  Carpentry: Hammer,
+  "AC Repair": Wind,
+  default: Bolt,
+};
 
-export function ServiceCategories() {
+function getIcon(name: string) {
+  return categoryIcons[name] || categoryIcons.default;
+}
+
+export async function ServiceCategories() {
+  const categoriesRes = await getAllCategories();
+  const categories: Category[] = categoriesRes.success ? categoriesRes.data : [];
+
+  if (categories.length === 0) return null;
+
   return (
     <SectionWrapper bg="muted" padding="lg">
       <SectionHeading
@@ -23,20 +43,20 @@ export function ServiceCategories() {
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {categories.map((cat) => {
-          const Icon = cat.icon;
+          const Icon = getIcon(cat.name);
           return (
-            <button
-              key={cat.label}
+            <Link
+              key={cat.id}
+              href={`/services?type=${encodeURIComponent(cat.name)}`}
               className="group flex items-center gap-4 rounded-xl border bg-background p-5 text-left shadow-sm transition-all hover:border-primary/30 hover:shadow-md"
             >
               <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                 <Icon className="size-5" />
               </div>
               <div>
-                <p className="font-medium">{cat.label}</p>
-                <p className="text-xs text-muted-foreground">{cat.count}</p>
+                <p className="font-medium">{cat.name}</p>
               </div>
-            </button>
+            </Link>
           );
         })}
       </div>
