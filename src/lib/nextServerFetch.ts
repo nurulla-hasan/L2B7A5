@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 type AuthMode = "required" | "optional" | "none";
 
-export type NextServerFetchOptions = Omit<
+type NextServerFetchOptions = Omit<
   RequestInit,
   "body"
 > & {
