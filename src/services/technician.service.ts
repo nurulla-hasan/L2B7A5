@@ -1,11 +1,14 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
 import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
-import type { User, TechnicianProfile } from "@/interface/user";
+import type { TechnicianWithProfile, TechnicianProfile } from "@/interface/user";
 import type { Booking } from "@/interface/booking";
+import type { TQuery } from "@/interface/global";
+import { buildQueryString } from "@/lib/buildQueryString";
 
-export function getAllTechnicians() {
-  return nextServerFetch<User[]>("/api/technicians", {
+export function getAllTechnicians(query: TQuery = {}) {
+  const params = buildQueryString(query);
+  return nextServerFetch<TechnicianWithProfile[]>(`/api/technicians${params}`, {
     auth: "none",
     next: { tags: [CACHE_TAGS.technicians], revalidate: CACHE_TIME.fiveMinutes },
   });
