@@ -5,7 +5,6 @@ import {
   Wrench,
   Calendar,
   User,
-  Clock,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
@@ -13,7 +12,8 @@ import {
 import { getSingleService } from "@/services/service.service";
 import CustomBreadcrumb from "@/components/common/custom-breadcrumb";
 import { PageWrapper } from "@/components/common/page-wrapper";
-import { formatPrice, DAY_LABELS } from "@/lib/utils";
+import { AvailabilitySchedule } from "@/components/common/availability-schedule";
+import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,48 +25,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { Service } from "@/interface/service";
-
-function AvailabilitySection({
-  availability,
-}: {
-  availability: Record<string, string[]>;
-}) {
-  const days = Object.entries(availability);
-
-  if (days.length === 0) return null;
-
-  return (
-    <div className="space-y-3">
-      <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-        <Calendar className="size-4 text-primary" />
-        Availability Schedule
-      </h3>
-      <div className="grid gap-2 sm:grid-cols-2">
-        {days.map(([day, slots]) => (
-          <div
-            key={day}
-            className="rounded-lg border border-border/50 bg-card/40 px-3.5 py-2.5"
-          >
-            <p className="text-xs font-medium text-foreground/80 capitalize">
-              {DAY_LABELS[day] || day}
-            </p>
-            <div className="mt-1 flex flex-wrap gap-1.5">
-              {slots.map((slot, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary"
-                >
-                  <Clock className="size-3" />
-                  {slot}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default async function ServiceDetailPage({
   params,
@@ -215,7 +173,9 @@ export default async function ServiceDetailPage({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <AvailabilitySection availability={availability} />
+                <div className="rounded-xl border border-border/50 bg-card/40 p-4">
+                  <AvailabilitySchedule availability={availability} />
+                </div>
               </CardContent>
             </Card>
           )}

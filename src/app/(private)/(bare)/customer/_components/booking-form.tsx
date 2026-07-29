@@ -31,6 +31,7 @@ import { createBookingAction } from "../_actions/booking.actions";
 import type { Service } from "@/interface/service";
 import { BookingSummaryCard } from "./booking-summary-card";
 import { BookingSidebar } from "./booking-sidebar";
+import { AvailabilitySchedule } from "@/components/common/availability-schedule";
 
 type BookingFormProps = {
   service: Service;
@@ -150,6 +151,13 @@ export function BookingForm({ service }: BookingFormProps) {
           </div>
 
           <CardContent className="space-y-6">
+            {/* Availability Schedule */}
+            {availability && (
+              <div className="rounded-xl border border-border/50 bg-muted/15 p-4">
+                <AvailabilitySchedule availability={availability} />
+              </div>
+            )}
+
             {/* Calendar */}
             <Controller
               name="scheduleDate"
