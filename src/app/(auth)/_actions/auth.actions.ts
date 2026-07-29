@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { nextServerFetch } from "@/lib/nextServerFetch";
+import { login, register } from "@/services/auth.service";
 import { decodeJwtPayload } from "@/lib/jwt";
 
 type AuthResult =
@@ -29,10 +29,7 @@ export async function loginAction(data: {
   email: string;
   password: string;
 }): Promise<AuthResult> {
-  const result = await nextServerFetch<{ accessToken: string }>(
-    "/api/auth/login",
-    { method: "POST", body: data, auth: "none" },
-  );
+  const result = await login(data);
 
   if (!result.success) return result;
 
@@ -48,10 +45,7 @@ export async function registerAction(data: {
   password: string;
   role: "CUSTOMER" | "TECHNICIAN";
 }): Promise<AuthResult> {
-  const result = await nextServerFetch<{ accessToken: string }>(
-    "/api/auth/register",
-    { method: "POST", body: data, auth: "none" },
-  );
+  const result = await register(data);
 
   if (!result.success) return result;
 
