@@ -2,9 +2,12 @@ import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
 import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
 import type { Service, ServiceWithRelations } from "@/interface/service";
+import { TQuery } from "@/interface/global";
+import { buildQueryString } from "@/lib/buildQueryString";
 
-export function getAllServices() {
-  return nextServerFetch<Service[]>("/api/services", {
+export function getAllServices(query: TQuery) {
+  const params = buildQueryString(query);
+  return nextServerFetch<Service[]>(`/api/services?${params}`, {
     auth: "none",
     next: { tags: [CACHE_TAGS.services], revalidate: CACHE_TIME.fiveMinutes },
   });

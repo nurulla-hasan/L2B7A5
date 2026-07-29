@@ -1,14 +1,17 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Search, Sparkles } from "lucide-react";
 
 import { SectionWrapper } from "@/components/common/section-wrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNextFilter } from "@/hooks/useNextFilter";
+import { InfoToast } from "@/lib/utils";
 
 export function HeroSection() {
-  const {updateFilter} = useNextFilter();
+  const router = useRouter();
+  const { updateFilter, getFilter } = useNextFilter();
   return (
     <SectionWrapper padding="xl">
       <div className="flex flex-col items-center gap-12 lg:flex-row lg:gap-20">
@@ -46,7 +49,18 @@ export function HeroSection() {
                 className="pl-10 shadow-xs"
               />
             </div>
-            <Button size="xl" className="shrink-0 gap-1.5">
+            <Button
+              size="xl"
+              className="shrink-0 gap-1.5"
+              onClick={() => {
+                const term = getFilter("searchTerm");
+                if (term) {
+                  router.push(`/services?searchTerm=${encodeURIComponent(term)}`);
+                } else {
+                  InfoToast("Please enter a service type");
+                }
+              }}
+            >
               Search
               <ArrowRight className="size-4" />
             </Button>

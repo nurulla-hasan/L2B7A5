@@ -11,8 +11,8 @@ type SectionWrapperProps = {
   container?: boolean;
   /** Use as a semantic <section> element (default: true) */
   asSection?: boolean;
-  /** Vertical padding preset: "none" | "sm" | "md" | "lg" | "xl" (default: "md") */
-  padding?: "none" | "sm" | "md" | "lg" | "xl";
+  /** Vertical padding preset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (default: "md") */
+  padding?: "none" | "xs" | "sm" | "md" | "lg" | "xl";
   /** Full-width background variant for alternating section colors */
   bg?: "white" | "muted" | "primary";
 };
@@ -25,6 +25,7 @@ const bgMap: Record<string, string> = {
 
 const paddingMap: Record<string, string> = {
   none: "",
+  xs: "py-4 md:py-6",
   sm: "py-8 md:py-10",
   md: "py-12 md:py-16",
   lg: "py-16 sm:py-24",
