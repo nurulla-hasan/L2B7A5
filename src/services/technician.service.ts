@@ -15,7 +15,7 @@ export function getAllTechnicians(query: TQuery = {}) {
 }
 
 export function getSingleTechnician(id: string) {
-  return nextServerFetch<User>(`/api/technicians/${id}`, {
+  return nextServerFetch<TechnicianWithProfile>(`/api/technicians/${id}`, {
     auth: "none",
     next: {
       tags: [CACHE_TAGS.technician(id), CACHE_TAGS.technicians],
