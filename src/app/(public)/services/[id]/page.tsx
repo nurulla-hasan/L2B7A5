@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import {
   MapPin,
   Wrench,
@@ -11,7 +12,6 @@ import {
 
 import { getSingleService } from "@/services/service.service";
 import CustomBreadcrumb from "@/components/common/custom-breadcrumb";
-import BackButton from "@/components/common/back-button";
 import { PageWrapper } from "@/components/common/page-wrapper";
 import { formatPrice, DAY_LABELS } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -93,11 +93,6 @@ export default async function ServiceDetailPage({
           { name: service.name, isCurrent: true },
         ]}
       />
-
-      {/* ── Back Button ──────────────────────────────────────── */}
-      <div className="mb-6">
-        <BackButton label="Back to Services" variant="link" />
-      </div>
 
       {/* ── Main Layout ─────────────────────────────────────── */}
       <div className="grid gap-8 lg:grid-cols-3">
@@ -268,10 +263,12 @@ export default async function ServiceDetailPage({
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full gap-2 rounded-xl text-sm font-semibold shadow-md transition-all duration-200 hover:shadow-lg">
-                  <Calendar className="size-4" />
-                  Proceed to Book
-                </Button>
+                <Link href={`/customer/bookings/create?serviceId=${service.id}`} className="w-full">
+                  <Button className="w-full gap-2 rounded-xl text-sm font-semibold shadow-md transition-all duration-200 hover:shadow-lg">
+                    <Calendar className="size-4" />
+                    Proceed to Book
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
 

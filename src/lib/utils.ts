@@ -76,7 +76,17 @@ export const formatPrice = (price: string) => {
   return !isNaN(num) ? `৳${num.toLocaleString("en-BD")}` : `৳${price}`;
 };
 
-// ── Day Labels ────────────────────────────────────────────
+// ── Day Helpers ──────────────────────────────────────────
+export const DAY_NAMES = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
+
 export const DAY_LABELS: Record<string, string> = {
   monday: "Monday",
   tuesday: "Tuesday",
@@ -86,3 +96,32 @@ export const DAY_LABELS: Record<string, string> = {
   saturday: "Saturday",
   sunday: "Sunday",
 };
+
+export function getMinDate() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const year = tomorrow.getFullYear();
+  const month = String(tomorrow.getMonth() + 1).padStart(2, "0");
+  const day = String(tomorrow.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function getDayName(dateStr: string) {
+  const date = new Date(dateStr + "T00:00:00");
+  return DAY_NAMES[date.getDay()];
+}
+
+
+export function getTomorrow() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+export function toDateString(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
