@@ -1,5 +1,6 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { User, Booking, Category } from "@/interface";
 
 export function getAllUsers() {
@@ -21,7 +22,9 @@ export function getAllBookings() {
 }
 
 export function getAdminCategories() {
-  return nextServerFetch<Category[]>("/api/admin/categories");
+  return nextServerFetch<Category[]>("/api/admin/categories", {
+    next: { tags: [CACHE_TAGS.categories] },
+  });
 }
 
 export function createAdminCategory(name: string) {

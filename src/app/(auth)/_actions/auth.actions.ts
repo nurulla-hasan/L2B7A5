@@ -2,6 +2,8 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { updateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { login, register } from "@/services/auth.service";
 import { decodeJwtPayload } from "@/lib/jwt";
 
@@ -35,6 +37,8 @@ export async function loginAction(data: {
 
   await setAccessTokenCookie(result.data.accessToken);
 
+  updateTag(CACHE_TAGS.user);
+
   const payload = decodeJwtPayload(result.data.accessToken);
   redirectByRole(payload?.role ?? "CUSTOMER");
 }
@@ -50,5 +54,8 @@ export async function registerAction(data: {
   if (!result.success) return result;
 
   await setAccessTokenCookie(result.data.accessToken);
+
+  updateTag(CACHE_TAGS.user);
+
   redirectByRole(data.role);
 }

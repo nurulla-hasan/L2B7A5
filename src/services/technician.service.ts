@@ -1,13 +1,23 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
+import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
 import type { User, Booking, TechnicianProfile } from "@/interface";
 
 export function getAllTechnicians() {
-  return nextServerFetch<User[]>("/api/technicians", { auth: "none" });
+  return nextServerFetch<User[]>("/api/technicians", {
+    auth: "none",
+    next: { tags: [CACHE_TAGS.technicians], revalidate: CACHE_TIME.fiveMinutes },
+  });
 }
 
 export function getSingleTechnician(id: string) {
-  return nextServerFetch<User>(`/api/technicians/${id}`, { auth: "none" });
+  return nextServerFetch<User>(`/api/technicians/${id}`, {
+    auth: "none",
+    next: {
+      tags: [CACHE_TAGS.technician(id), CACHE_TAGS.technicians],
+      revalidate: CACHE_TIME.fiveMinutes,
+    },
+  });
 }
 
 export function getTechnicianBookings() {
@@ -25,7 +35,9 @@ export function updateTechnicianProfile(data: {
   });
 }
 
-export function updateTechnicianAvailability(availability: Record<string, string[]>) {
+export function updateTechnicianAvailability(
+  availability: Record<string, string[]>,
+) {
   return nextServerFetch<TechnicianProfile>("/api/technician/availability", {
     method: "PUT",
     body: availability,

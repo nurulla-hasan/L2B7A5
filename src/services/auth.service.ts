@@ -1,6 +1,7 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
 import type { User, LoginPayload, RegisterPayload } from "@/interface";
+import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
 
 export function login(payload: LoginPayload) {
   return nextServerFetch<{ accessToken: string }>("/api/auth/login", {
@@ -19,7 +20,9 @@ export function register(payload: RegisterPayload) {
 }
 
 export function getMe() {
-  return nextServerFetch<User>("/api/auth/me");
+  return nextServerFetch<User>("/api/auth/me", {
+    next: { tags: [CACHE_TAGS.user], revalidate: CACHE_TIME.day },
+  });
 }
 
 export function refreshToken() {

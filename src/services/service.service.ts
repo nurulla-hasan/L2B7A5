@@ -1,14 +1,22 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
+import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
 import type { Service, ServiceWithRelations } from "@/interface";
 
 export function getAllServices() {
-  return nextServerFetch<Service[]>("/api/services", { auth: "none" });
+  return nextServerFetch<Service[]>("/api/services", {
+    auth: "none",
+    next: { tags: [CACHE_TAGS.services], revalidate: CACHE_TIME.fiveMinutes },
+  });
 }
 
 export function getSingleService(id: string) {
   return nextServerFetch<ServiceWithRelations>(`/api/services/${id}`, {
     auth: "none",
+    next: {
+      tags: [CACHE_TAGS.service(id), CACHE_TAGS.services],
+      revalidate: CACHE_TIME.fiveMinutes,
+    },
   });
 }
 
