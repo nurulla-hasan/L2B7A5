@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useNextFilter } from "@/hooks/useNextFilter";
 
-interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   filterKey?: string;
   debounce?: number;
+  size?: "default" | "lg" | "xl";
 }
 
 export function SearchInput({

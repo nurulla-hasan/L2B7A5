@@ -1,6 +1,7 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
-import type { User, LoginPayload, RegisterPayload } from "@/interface";
+import type { User } from "@/interface/user";
+import type { LoginPayload, RegisterPayload } from "@/interface/auth";
 import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
 
 export function login(payload: LoginPayload) {

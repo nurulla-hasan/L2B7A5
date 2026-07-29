@@ -71,7 +71,7 @@ export function ImageCropDialog({
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>প্রোফাইল ছবি ক্রপ করুন</DialogTitle>
+          <DialogTitle>Image Crop</DialogTitle>
         </DialogHeader>
 
         <div className="relative mx-auto h-80 w-full overflow-hidden rounded-lg bg-black/5">

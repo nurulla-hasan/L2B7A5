@@ -1,7 +1,7 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
 import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
-import type { Service, ServiceWithRelations } from "@/interface";
+import type { Service, ServiceWithRelations } from "@/interface/service";
 
 export function getAllServices() {
   return nextServerFetch<Service[]>("/api/services", {

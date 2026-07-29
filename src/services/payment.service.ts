@@ -1,6 +1,6 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
-import type { Payment } from "@/interface";
+import type { Payment } from "@/interface/payment";
 
 export function getMyPayments() {
   return nextServerFetch<Payment[]>("/api/payments");

@@ -1,8 +1,11 @@
 import {
+  Info,
   LayoutDashboard,
+  Phone,
   Users,
   CalendarCheck,
   Tags,
+  Waypoints,
   Wrench,
   Clock,
   UserRound,
@@ -12,8 +15,16 @@ import {
 export type NavLink = {
   label: string;
   href: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
 };
+
+export const publicNavLinks: NavLink[] = [
+  { label: "Services", href: "/services", icon: Wrench },
+  { label: "Technicians", href: "/technicians", icon: Users },
+  { label: "How It Works", href: "/how-it-works", icon: Waypoints },
+  { label: "About", href: "/about", icon: Info },
+  { label: "Contact", href: "/contact", icon: Phone },
+];
 
 export const adminLinks: NavLink[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },

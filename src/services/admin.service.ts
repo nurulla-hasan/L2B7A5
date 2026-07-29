@@ -1,7 +1,9 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import type { User, Booking, Category } from "@/interface";
+import type { User } from "@/interface/user";
+import type { Booking } from "@/interface/booking";
+import type { Category } from "@/interface/category";
 
 export function getAllUsers() {
   return nextServerFetch<User[]>("/api/admin/users");

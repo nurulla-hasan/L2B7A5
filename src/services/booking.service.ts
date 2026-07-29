@@ -1,6 +1,6 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
-import type { Booking, BookingWithRelations } from "@/interface";
+import type { Booking, BookingWithRelations } from "@/interface/booking";
 
 export function getMyBookings() {
   return nextServerFetch<Booking[]>("/api/bookings");
