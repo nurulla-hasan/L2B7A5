@@ -1,0 +1,29 @@
+import "server-only";
+import { nextServerFetch } from "@/lib/nextServerFetch";
+import type { User, LoginPayload, RegisterPayload } from "@/interface";
+
+export function login(payload: LoginPayload) {
+  return nextServerFetch<{ accessToken: string }>("/api/auth/login", {
+    method: "POST",
+    body: payload,
+    auth: "none",
+  });
+}
+
+export function register(payload: RegisterPayload) {
+  return nextServerFetch<{ accessToken: string }>("/api/auth/register", {
+    method: "POST",
+    body: payload,
+    auth: "none",
+  });
+}
+
+export function getMe() {
+  return nextServerFetch<User>("/api/auth/me");
+}
+
+export function refreshToken() {
+  return nextServerFetch<{ accessToken: string }>("/api/auth/refresh-token", {
+    method: "POST",
+  });
+}

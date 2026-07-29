@@ -1,0 +1,45 @@
+import "server-only";
+import { nextServerFetch } from "@/lib/nextServerFetch";
+import type { User, Booking, Category } from "@/interface";
+
+export function getAllUsers() {
+  return nextServerFetch<User[]>("/api/admin/users");
+}
+
+export function updateUserStatus(
+  id: string,
+  activeStatus: "ACTIVE" | "BLOCKED",
+) {
+  return nextServerFetch<User>(`/api/admin/users/${id}`, {
+    method: "PATCH",
+    body: { activeStatus },
+  });
+}
+
+export function getAllBookings() {
+  return nextServerFetch<Booking[]>("/api/admin/bookings");
+}
+
+export function getAdminCategories() {
+  return nextServerFetch<Category[]>("/api/admin/categories");
+}
+
+export function createAdminCategory(name: string) {
+  return nextServerFetch<Category>("/api/admin/categories", {
+    method: "POST",
+    body: { name },
+  });
+}
+
+export function updateAdminCategory(id: string, name: string) {
+  return nextServerFetch<Category>(`/api/admin/categories/${id}`, {
+    method: "PATCH",
+    body: { name },
+  });
+}
+
+export function deleteAdminCategory(id: string) {
+  return nextServerFetch<void>(`/api/admin/categories/${id}`, {
+    method: "DELETE",
+  });
+}
