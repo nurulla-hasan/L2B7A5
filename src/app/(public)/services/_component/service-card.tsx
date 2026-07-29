@@ -13,15 +13,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Service } from "@/interface/service";
+import { formatPrice } from "@/lib/utils";
 
 type ServiceCardProps = {
   service: Service;
 };
 
 export function ServiceCard({ service }: ServiceCardProps) {
-  const formattedPrice = !isNaN(Number(service.price))
-    ? `৳${Number(service.price).toLocaleString("en-BD")}`
-    : `৳${service.price}`;
 
   return (
     <Card className="pt-0 group relative flex flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5">
@@ -36,7 +34,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
         </Badge>
 
         <div className="flex items-center gap-1 rounded-full border border-border/60 bg-background/90 px-3 py-1 text-sm font-bold text-primary shadow-xs backdrop-blur-xs">
-          {formattedPrice}
+          {formatPrice(service.price)}
         </div>
       </div>
 

@@ -69,3 +69,20 @@ export const generateSlug = (title: string) => {
 export const clamp = (value: number, min: number, max: number): number => {
   return Math.min(Math.max(value, min), max);
 };
+
+// ── Price Formatting ──────────────────────────────────────
+export const formatPrice = (price: string) => {
+  const num = Number(price);
+  return !isNaN(num) ? `৳${num.toLocaleString("en-BD")}` : `৳${price}`;
+};
+
+// ── Day Labels ────────────────────────────────────────────
+export const DAY_LABELS: Record<string, string> = {
+  monday: "Monday",
+  tuesday: "Tuesday",
+  wednesday: "Wednesday",
+  thursday: "Thursday",
+  friday: "Friday",
+  saturday: "Saturday",
+  sunday: "Sunday",
+};
