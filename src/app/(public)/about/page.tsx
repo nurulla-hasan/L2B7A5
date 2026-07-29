@@ -1,6 +1,7 @@
 import { BadgeCheck, Heart, Lightbulb, Target } from "lucide-react";
 import { SectionWrapper } from "@/components/common/section-wrapper";
 import { SectionHeading } from "@/components/common/section-heading";
+import { Card, CardContent } from "@/components/ui/card";
 
 const values = [
   {
@@ -75,18 +76,19 @@ export default function AboutPage() {
           {values.map((v) => {
             const Icon = v.icon;
             return (
-              <div
-                key={v.title}
-                className="rounded-xl border bg-background p-6 text-center shadow-sm"
-              >
-                <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Icon className="size-6" />
-                </div>
-                <h3 className="mt-4 font-semibold">{v.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {v.description}
-                </p>
-              </div>
+              <Card key={v.title} size="sm" className="text-center shadow-sm">
+                <CardContent className="space-y-3">
+                  <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <Icon className="size-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">{v.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {v.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             );
           })}
         </div>
