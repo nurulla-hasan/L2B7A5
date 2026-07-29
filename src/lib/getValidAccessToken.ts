@@ -41,10 +41,10 @@ export const getValidAccessToken = async (): Promise<string> => {
     throw new ApiError("Authentication session has expired", 401, null);
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_API;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
   if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_BASE_API is not defined");
+    throw new Error("NEXT_PUBLIC_API_URL is not defined");
   }
 
   const response = await fetch(
