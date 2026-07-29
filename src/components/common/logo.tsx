@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export function Logo({
   className,
-  size = "sm",
+  size = "md",
   showText = false,
 }: {
   className?: string;
