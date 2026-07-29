@@ -1,7 +1,7 @@
 import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
 import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
-import type { Service, ServiceWithRelations } from "@/interface/service";
+import type { Service } from "@/interface/service";
 import { TQuery } from "@/interface/global";
 import { buildQueryString } from "@/lib/buildQueryString";
 
@@ -14,7 +14,7 @@ export function getAllServices(query: TQuery) {
 }
 
 export function getSingleService(id: string) {
-  return nextServerFetch<ServiceWithRelations>(`/api/services/${id}`, {
+  return nextServerFetch<Service>(`/api/services/${id}`, {
     auth: "none",
     next: {
       tags: [CACHE_TAGS.service(id), CACHE_TAGS.services],
