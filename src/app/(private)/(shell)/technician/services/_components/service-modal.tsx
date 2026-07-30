@@ -37,9 +37,9 @@ const createServiceSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
 });
 
-type CreateServiceFormData = z.infer<typeof createServiceSchema>;
+type ServiceFormData = z.infer<typeof createServiceSchema>;
 
-interface CreateServiceModalProps {
+interface ServiceModalProps {
   categories?: Category[];
   actionType?: "create" | "edit";
   defaultData?: Service;
@@ -48,14 +48,14 @@ interface CreateServiceModalProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-export function CreateServiceModal({ 
+export function ServiceModal({ 
   categories: initialCategories = [],
   actionType = "create",
   defaultData,
   actionTrigger,
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange
-}: CreateServiceModalProps) {
+}: ServiceModalProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setOpen = controlledOnOpenChange || setInternalOpen;
@@ -65,7 +65,7 @@ export function CreateServiceModal({
 
   const isEdit = actionType === "edit";
 
-  const form = useForm<CreateServiceFormData>({
+  const form = useForm<ServiceFormData>({
     resolver: zodResolver(createServiceSchema),
     defaultValues: {
       name: defaultData?.name || "",
@@ -76,7 +76,7 @@ export function CreateServiceModal({
     },
   });
 
-  function onSubmit(data: CreateServiceFormData) {
+  function onSubmit(data: ServiceFormData) {
     startTransition(async () => {
       let result;
       if (isEdit && defaultData?.id) {

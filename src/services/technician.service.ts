@@ -2,7 +2,7 @@ import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
 import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
 import type { TechnicianWithProfile, TechnicianProfile } from "@/interface/user";
-import type { Booking } from "@/interface/booking";
+import type { Booking, TechnicianBooking } from "@/interface/booking";
 import type { TQuery } from "@/interface/global";
 import { buildQueryString } from "@/lib/buildQueryString";
 
@@ -25,7 +25,7 @@ export function getSingleTechnician(id: string) {
 }
 
 export function getTechnicianBookings() {
-  return nextServerFetch<Booking[]>("/api/technician/bookings");
+  return nextServerFetch<TechnicianBooking[]>("/api/technician/bookings");
 }
 
 export function updateTechnicianProfile(data: {

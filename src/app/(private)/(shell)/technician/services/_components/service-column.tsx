@@ -15,7 +15,7 @@ import {
 import type { Service } from "@/interface/service";
 import { formatPrice, formatDate, SuccessToast } from "@/lib/utils";
 
-import { CreateServiceModal } from "./create-service-modal";
+import { ServiceModal } from "./service-modal";
 
 import { useState } from "react";
 
@@ -24,14 +24,16 @@ import { getCategoriesAction } from "../../_actions/technician.actions";
 
 const ActionsCell = ({ service }: { service: Service }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[] | null>(null);
 
   const handleEditClick = async () => {
     setIsEditOpen(true);
-    if (categories.length === 0) {
+    if (categories === null) {
       const res = await getCategoriesAction();
       if (res && res.success) {
         setCategories(res.data);
+      } else {
+        setCategories([]);
       }
     }
   };
@@ -72,8 +74,8 @@ const ActionsCell = ({ service }: { service: Service }) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <CreateServiceModal
-        categories={categories}
+      <ServiceModal
+        categories={categories || []}
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
         actionType="edit"

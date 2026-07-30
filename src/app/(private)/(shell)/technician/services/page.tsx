@@ -4,7 +4,7 @@ import { getAllCategories } from "@/services/category.service";
 
 import { serviceColumns } from "./_components/service-column";
 
-import { CreateServiceModal } from "./_components/create-service-modal";
+import { ServiceModal } from "./_components/service-modal";
 import { DataTable } from "@/components/common/data-table";
 
 export default async function TechnicianServicesPage() {
@@ -19,12 +19,12 @@ export default async function TechnicianServicesPage() {
         title="My Services"
         description="Manage and view all the services you offer."
         alignment="left"
-        as="h2"
+        as="h3"
       >
-        <CreateServiceModal categories={categories} />
+        <ServiceModal categories={categories} />
       </SectionHeading>
 
-      <div className="mt-4">
+      <div>
         <DataTable columns={serviceColumns} data={services} />
       </div>
     </div>

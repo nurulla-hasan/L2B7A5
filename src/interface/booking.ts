@@ -39,3 +39,15 @@ export interface BookingWithService extends Booking {
   technician?: { id: string; name: string; email: string };
   payment?: unknown;
 }
+
+export interface TechnicianBooking {
+  id: string;
+  serviceId: string;
+  serviceName: string;
+  price: string;
+  customerName: string;
+  customerEmail: string;
+  scheduleDate: string;
+  timeSlot: string;
+  status: BookingStatus;
+}
