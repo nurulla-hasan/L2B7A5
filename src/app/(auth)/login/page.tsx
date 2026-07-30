@@ -25,7 +25,11 @@ import {
   CardContent,
 } from "@/components/ui/card";
 
+import { useSearchParams } from "next/navigation";
+
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -38,7 +42,7 @@ export default function LoginPage() {
   const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(data: LoginFormData) {
-    const result = await loginAction(data);
+    const result = await loginAction(data, callbackUrl ?? undefined);
     // Server action redirects on success — only errors reach here
     if (!result.success) {
       ErrorToast(result.message ?? "Login failed");

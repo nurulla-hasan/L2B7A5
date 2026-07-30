@@ -5,7 +5,7 @@ import type { LoginPayload, RegisterPayload } from "@/interface/auth";
 import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
 
 export function login(payload: LoginPayload) {
-  return nextServerFetch<{ accessToken: string }>("/api/auth/login", {
+  return nextServerFetch<{ accessToken: string; refreshToken: string }>("/api/auth/login", {
     method: "POST",
     body: payload,
     auth: "none",
@@ -13,7 +13,7 @@ export function login(payload: LoginPayload) {
 }
 
 export function register(payload: RegisterPayload) {
-  return nextServerFetch<{ accessToken: string }>("/api/auth/register", {
+  return nextServerFetch<{ accessToken: string; refreshToken: string; }>("/api/auth/register", {
     method: "POST",
     body: payload,
     auth: "none",
