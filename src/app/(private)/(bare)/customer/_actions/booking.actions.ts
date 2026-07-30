@@ -18,12 +18,8 @@ export async function createBookingAction(data: {
   redirect("/customer/bookings");
 }
 
-export async function cancelBookingAction(
-  _prevState: unknown,
-  formData: FormData,
-) {
-  const id = formData.get("bookingId") as string;
-  const result = await cancelBooking(id);
+export async function cancelBookingAction(bookingId: string) {
+  const result = await cancelBooking(bookingId);
 
   if (!result.success) return { success: false, message: result.message };
 

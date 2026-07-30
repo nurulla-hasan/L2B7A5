@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarCheck, Clock, CreditCard, X } from "lucide-react";
-import { useActionState, useTransition } from "react";
+import { useTransition } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,19 +24,21 @@ export function BookingCard({ booking }: { booking: BookingWithService }) {
   const canCancel = booking.status === "REQUESTED";
   const canPay = booking.status === "ACCEPTED";
   const canReview = booking.status === "COMPLETED";
-  const [, dispatch, isPending] = useActionState(cancelBookingAction, null);
+  const [isCanceling, startTransitionCancel] = useTransition();
   const [isPaying, startTransition] = useTransition();
 
   function handleCancel() {
-    const form = new FormData();
-    form.append("bookingId", booking.id);
-    startTransition(() => dispatch(form));
+    startTransitionCancel(async () => {
+      const result = await cancelBookingAction(booking.id);
+      if (result && !result.success) {
+        ErrorToast(result.message);
+      }
+    });
   }
 
   function handlePay() {
     startTransition(async () => {
       const result = await createPaymentAction(booking.id);
-      console.log(result);
       if (result.success) {
         window.location.href = result.paymentUrl;
       } else {
@@ -107,7 +109,7 @@ export function BookingCard({ booking }: { booking: BookingWithService }) {
                 description="Are you sure you want to cancel this booking?"
                 confirmText="Yes, Cancel"
                 variant="destructive"
-                isLoading={isPending}
+                isLoading={isCanceling}
                 actionTrigger={
                   <Button
                     variant="outline"
