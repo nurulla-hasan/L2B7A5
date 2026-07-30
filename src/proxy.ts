@@ -32,8 +32,8 @@ const IS_PROTECTION_ON = true;
 
 const ROLE_HOME: Record<UserRole, string> = {
   CUSTOMER: "/customer",
-  TECHNICIAN: "/technician",
-  ADMIN: "/admin",
+  TECHNICIAN: "/technician/dashboard",
+  ADMIN: "/admin/dashboard",
 };
 
 const decodeToken = (token: string): TokenPayload | null => {
@@ -123,7 +123,17 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     } else {
       response = NextResponse.next();
     }
-  } 
+  }
+  // Redirect logged-in admin/technician away from public routes
+  else if (isPublic && accessToken && !isExpired(accessToken)) {
+    const role = getRole(accessToken);
+
+    if (role === "ADMIN" || role === "TECHNICIAN") {
+      response = NextResponse.redirect(new URL(ROLE_HOME[role], request.url));
+    } else {
+      response = NextResponse.next();
+    }
+  }
   // Redirect unauthenticated users to login for protected pages
   else if (!isPublic && !isAuthRoute) {
     if (!accessToken || isExpired(accessToken)) {
