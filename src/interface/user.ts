@@ -10,6 +10,7 @@ export interface User {
   activeStatus: ActiveStatus;
   createdAt: string;
   updatedAt: string;
+  technicianProfile?: TechnicianProfile | null;
 }
 
 export interface TechnicianProfile {

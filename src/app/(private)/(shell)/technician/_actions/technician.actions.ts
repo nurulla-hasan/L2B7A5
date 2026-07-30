@@ -28,7 +28,7 @@ export async function updateProfileAction(data: {
   if (!result.success) return { success: false, message: result.message };
 
   updateTag(CACHE_TAGS.technicians);
-  redirect("/technician/profile");
+  return { success: true };
 }
 
 export async function updateAvailabilityAction(
@@ -37,7 +37,7 @@ export async function updateAvailabilityAction(
   const result = await updateTechnicianAvailability(availability);
   if (!result.success) return { success: false, message: result.message };
 
-  redirect("/technician/availability");
+  return { success: true };
 }
 
 export async function updateBookingStatusAction(id: string, status: string) {
