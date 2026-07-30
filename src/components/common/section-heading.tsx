@@ -56,7 +56,8 @@ export function SectionHeading({
           )}
           <Tag
             className={cn(
-              "mt-3 tracking-tight text-primary font-heading",
+              badge ? "mt-3" : "",
+              "tracking-tight text-primary font-heading",
               titleClassName ?? headingSizes[Tag],
             )}
           >

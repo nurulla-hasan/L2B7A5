@@ -16,10 +16,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { User } from "@/interface/user";
+import { getInitials } from "@/lib/utils";
 
-export function DashboardHeader() {
+export function DashboardHeader({ user }: { user?: User | null }) {
+  const fallback = user?.name ? getInitials(user.name) : <UserRound className="size-4" />;
+  
   return (
-    <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background px-4 sm:px-6">
+    <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-sidebar px-4 sm:px-6">
       {/* Mobile Sidebar Trigger */}
       <SidebarTrigger className="lg:hidden" />
 
@@ -36,19 +40,23 @@ export function DashboardHeader() {
           >
             <Avatar className="size-8 cursor-pointer">
               <AvatarFallback>
-                <UserRound className="size-4" />
+                {fallback}
               </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col">
-                <p className="text-sm font-medium text-foreground">User</p>
-                <p className="mt-0.5 truncate text-xs text-muted-foreground/70">
-                  user@fixitnow.com
-                </p>
-              </div>
-            </DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col">
+                  <p className="text-sm font-medium text-foreground">
+                    {user ? user.name : "User"}
+                  </p>
+                  <p className="mt-0.5 truncate text-xs text-muted-foreground/70">
+                    {user?.email || "user@fixitnow.com"}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem render={<Link href="/" />} className="flex items-center gap-2">

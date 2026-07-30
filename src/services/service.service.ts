@@ -13,6 +13,12 @@ export function getAllServices(query: TQuery) {
   });
 }
 
+export function getMyServices() {
+  return nextServerFetch<Service[]>("/api/services/my-services", {
+    next: { tags: [CACHE_TAGS.services], revalidate: CACHE_TIME.fiveMinutes },
+  });
+}
+
 export function getSingleService(id: string) {
   return nextServerFetch<Service>(`/api/services/${id}`, {
     auth: "none",
