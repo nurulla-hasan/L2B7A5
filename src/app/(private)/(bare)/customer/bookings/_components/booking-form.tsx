@@ -27,11 +27,11 @@ import {
   createBookingSchema,
   type CreateBookingFormData,
 } from "@/validation/booking.schema";
-import { createBookingAction } from "../_actions/booking.actions";
+import { createBookingAction } from "../../_actions/booking.actions";
 import type { Service } from "@/interface/service";
-import { BookingSummaryCard } from "./booking-summary-card";
 import { BookingSidebar } from "./booking-sidebar";
 import { AvailabilitySchedule } from "@/components/common/availability-schedule";
+import { BookingSummaryCard } from "./booking-summary-card";
 
 type BookingFormProps = {
   service: Service;

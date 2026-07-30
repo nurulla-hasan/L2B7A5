@@ -5,7 +5,7 @@ import { ArrowLeft, CalendarCheck2, Sparkles, ShieldCheck } from "lucide-react";
 import { getSingleService } from "@/services/service.service";
 import { PageWrapper } from "@/components/common/page-wrapper";
 import CustomBreadcrumb from "@/components/common/custom-breadcrumb";
-import { BookingForm } from "../../_components/booking-form";
+import { BookingForm } from "../_components/booking-form";
 import type { Service } from "@/interface/service";
 import { Badge } from "@/components/ui/badge";
 

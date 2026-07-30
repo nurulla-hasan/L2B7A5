@@ -4,7 +4,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@utility h-screen-nav {
+@utility screen-height {
   height: calc(100dvh - 60px);
 }
 
