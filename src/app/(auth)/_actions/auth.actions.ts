@@ -59,3 +59,10 @@ export async function registerAction(data: {
 
   redirectByRole(data.role);
 }
+
+export async function logoutAction() {
+  const cookieStore = await cookies();
+  cookieStore.delete("accessToken");
+  updateTag(CACHE_TAGS.user);
+  redirect("/");
+}

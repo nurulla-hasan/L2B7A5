@@ -2,16 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTransition } from "react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/common/logo";
 import { ThemeToggle } from "@/components/common/theme-toggle";
 import { CONTAINER_MAX_WIDTH } from "@/components/common/page-wrapper";
+import { logoutAction } from "@/app/(auth)/_actions/auth.actions";
 import { publicNavLinks } from "./nav-links";
 import { MobileDrawer } from "./mobile-drawer";
 import { AuthDropdown } from "@/components/auth/auth-dropdown";
+import type { User } from "@/interface/user";
 
-export function Navbar() {
+export function Navbar({
+  user,
+}: {
+  user?: User;
+}) {
   const pathname = usePathname();
+  const [, startTransition] = useTransition();
+
+  function handleLogout() {
+    startTransition(() => logoutAction());
+  }
 
   function isActive(href: string) {
     return pathname.startsWith(href);
@@ -49,9 +61,15 @@ export function Navbar() {
         <div className="flex flex-1 items-center justify-end gap-2">
           <ThemeToggle />
           <div className="hidden md:block">
-            <AuthDropdown isAuthenticated={true} />
+            <AuthDropdown
+              user={user}
+              onLogout={handleLogout}
+            />
           </div>
-          <MobileDrawer isAuthenticated={true} />
+          <MobileDrawer
+            user={user}
+            onLogout={handleLogout}
+          />
         </div>
       </div>
     </header>

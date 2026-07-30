@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, LogOut, UserRound } from "lucide-react";
+import { LogOut, UserRound } from "lucide-react";
 import Link from "next/link";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -16,22 +16,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getInitials } from "@/lib/utils";
 import type { User } from "@/interface/user";
-
-const dashboardHref: Record<string, string> = {
-  CUSTOMER: "/customer/bookings",
-  TECHNICIAN: "/technician/dashboard",
-  ADMIN: "/admin/dashboard",
-};
+import { customerLinks } from "@/components/layout/navbar/nav-links";
 
 export function AuthDropdown({
-  isAuthenticated,
   user,
   onLogout,
 }: {
-  isAuthenticated?: boolean;
   user?: User;
   onLogout?: () => void;
 }) {
+  const isAuthenticated = !!user;
   // Not logged in
   if (!isAuthenticated) {
     return (
@@ -57,12 +51,12 @@ export function AuthDropdown({
           />
         }
       >
-        <Avatar size="lg">
+        <Avatar>
           <AvatarFallback>{getInitials(user?.name ?? "") || <UserRound />}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-48">
         {user?.name && (
           <DropdownMenuGroup>
             <DropdownMenuLabel className="font-normal">
@@ -81,17 +75,23 @@ export function AuthDropdown({
         {user?.name && <DropdownMenuSeparator />}
 
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            render={
-              <Link
-                href={dashboardHref[user?.role ?? "CUSTOMER"] ?? "/"}
-                className="flex items-center gap-2"
-              />
-            }
-          >
-            <LayoutDashboard />
-            Dashboard
-          </DropdownMenuItem>
+          {customerLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <DropdownMenuItem
+                key={link.href}
+                render={
+                  <Link
+                    href={link.href}
+                    className="flex items-center gap-2"
+                  />
+                }
+              >
+                <Icon className="size-4" />
+                {link.label}
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

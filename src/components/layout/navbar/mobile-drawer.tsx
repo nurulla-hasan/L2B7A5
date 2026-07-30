@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  LayoutDashboard,
   LogIn,
   LogOut,
   Menu,
@@ -12,7 +11,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn, getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { publicNavLinks } from "./nav-links";
+import { publicNavLinks, customerLinks } from "./nav-links";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/common/logo";
 import {
@@ -23,21 +22,14 @@ import {
 } from "@/components/ui/sheet";
 import type { User } from "@/interface/user";
 
-const dashboardHref: Record<string, string> = {
-  CUSTOMER: "/customer/bookings",
-  TECHNICIAN: "/technician/dashboard",
-  ADMIN: "/admin/dashboard",
-};
-
 export function MobileDrawer({
-  isAuthenticated,
   user,
   onLogout,
 }: {
-  isAuthenticated?: boolean;
   user?: User;
   onLogout?: () => void;
 }) {
+  const isAuthenticated = !!user;
   const pathname = usePathname();
 
   function isActive(href: string) {
@@ -125,30 +117,24 @@ export function MobileDrawer({
                 </div>
               </div>
               <div className="grid gap-1">
-                <SheetClose
-                  nativeButton={false}
-                  render={
-                    <Link
-                      href={dashboardHref[user.role] ?? "/"}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                    >
-                      <LayoutDashboard className="size-4 shrink-0" />
-                      Dashboard
-                    </Link>
-                  }
-                />
-                <SheetClose
-                  nativeButton={false}
-                  render={
-                    <Link
-                      href={`/${user.role.toLowerCase()}/profile`}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                    >
-                      <UserRound className="size-4 shrink-0" />
-                      Profile
-                    </Link>
-                  }
-                />
+                {customerLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <SheetClose
+                      key={link.href}
+                      nativeButton={false}
+                      render={
+                        <Link
+                          href={link.href}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                        >
+                          <Icon className="size-4 shrink-0" />
+                          {link.label}
+                        </Link>
+                      }
+                    />
+                  );
+                })}
               </div>
               <hr className="my-2 border-border/50" />
               <button

@@ -7,7 +7,7 @@ import {
   Tags,
   Waypoints,
   Wrench,
-  Clock,
+  // Clock,
   UserRound,
   type LucideIcon,
 } from "lucide-react";
@@ -26,6 +26,12 @@ export const publicNavLinks: NavLink[] = [
   { label: "Contact", href: "/contact", icon: Phone },
 ];
 
+export const customerLinks: NavLink[] = [
+  { label: "Bookings", href: "/customer/bookings", icon: CalendarCheck },
+  { label: "Payment", href: "/customer/payments", icon: Wrench },
+  { label: "Profile", href: "/customer/profile", icon: UserRound },
+];
+
 export const adminLinks: NavLink[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Users", href: "/admin/users", icon: Users },
@@ -38,5 +44,4 @@ export const technicianLinks: NavLink[] = [
   { label: "Bookings", href: "/technician/bookings", icon: CalendarCheck },
   { label: "My Services", href: "/technician/services", icon: Wrench },
   { label: "Profile", href: "/technician/profile", icon: UserRound },
-  { label: "Availability", href: "/technician/availability", icon: Clock },
 ];
