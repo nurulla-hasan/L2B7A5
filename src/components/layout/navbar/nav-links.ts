@@ -15,7 +15,7 @@ import {
 export type NavLink = {
   label: string;
   href: string;
-  icon?: LucideIcon;
+  icon: LucideIcon;
 };
 
 export const publicNavLinks: NavLink[] = [

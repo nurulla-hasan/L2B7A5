@@ -7,6 +7,8 @@ export type BookingStatus =
   | "IN_PROGRESS"
   | "COMPLETED";
 
+export type BookingTab = "all" | "active" | "completed" | "cancelled";
+
 export interface Booking {
   id: string;
   customerId: string;
@@ -21,6 +23,19 @@ export interface Booking {
 
 export interface BookingWithRelations extends Booking {
   customer: { id: string; name: string; email: string };
-  technician: { id: string; name: string };
-  service: { id: string; name: string; price: number };
+  technician: { id: string; name: string; email?: string };
+  service: {
+    id: string;
+    name: string;
+    price: string;
+    description?: string;
+  };
+  payment?: unknown;
+  review?: unknown;
+}
+
+export interface BookingWithService extends Booking {
+  service?: { id: string; name: string; price: string };
+  technician?: { id: string; name: string; email: string };
+  payment?: unknown;
 }
