@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Edit, Trash2 } from "lucide-react";
-import Link from "next/link";
 
 import {
   DropdownMenu,
@@ -15,6 +14,74 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Service } from "@/interface/service";
 import { formatPrice, formatDate, SuccessToast } from "@/lib/utils";
+
+import { CreateServiceModal } from "./create-service-modal";
+
+import { useState } from "react";
+
+import { Category } from "@/interface/category";
+import { getCategoriesAction } from "../../_actions/technician.actions";
+
+const ActionsCell = ({ service }: { service: Service }) => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const handleEditClick = async () => {
+    setIsEditOpen(true);
+    if (categories.length === 0) {
+      const res = await getCategoriesAction();
+      if (res && res.success) {
+        setCategories(res.data);
+      }
+    }
+  };
+
+  return (
+    <div className="flex justify-end">
+      <DropdownMenu>
+        <DropdownMenuTrigger className="mr-4">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-fit">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => {
+                navigator.clipboard.writeText(service.id);
+                SuccessToast("Service ID copied to clipboard!");
+              }}
+            >
+              Copy service ID
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem 
+              className="cursor-pointer w-full text-left" 
+              onClick={handleEditClick}
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              Edit Service
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Service
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <CreateServiceModal
+        categories={categories}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        actionType="edit"
+        defaultData={service}
+      />
+    </div>
+  );
+};
 
 export const serviceColumns: ColumnDef<Service>[] = [
   {
@@ -77,46 +144,6 @@ export const serviceColumns: ColumnDef<Service>[] = [
   {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
-    cell: ({ row }) => {
-      const service = row.original;
-
-      return (
-        <div className="flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="mr-4">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-fit">
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() => {
-                    navigator.clipboard.writeText(service.id);
-                    SuccessToast("Service ID copied to clipboard!");
-                  }}
-                >
-                  Copy service ID
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem 
-                  className="cursor-pointer" 
-                  render={<Link href={`/technician/services/${service.id}/edit`} />}
-                >
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit Service
-                </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Service
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
+    cell: ({ row }) => <ActionsCell service={row.original} />,
   },
 ];

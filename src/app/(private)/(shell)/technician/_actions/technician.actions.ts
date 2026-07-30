@@ -13,6 +13,11 @@ import {
   updateService,
   deleteService,
 } from "@/services/service.service";
+import { getAllCategories } from "@/services/category.service";
+
+export async function getCategoriesAction() {
+  return await getAllCategories();
+}
 
 export async function updateProfileAction(data: {
   skills: string;
@@ -53,7 +58,7 @@ export async function createServiceAction(data: {
   if (!result.success) return { success: false, message: result.message };
 
   updateTag(CACHE_TAGS.services);
-  redirect("/technician/services");
+  return { success: true };
 }
 
 export async function updateServiceAction(
@@ -70,7 +75,7 @@ export async function updateServiceAction(
 
   updateTag(CACHE_TAGS.services);
   updateTag(CACHE_TAGS.service(id));
-  redirect("/technician/services");
+  return { success: true };
 }
 
 export async function deleteServiceAction(id: string) {
@@ -78,5 +83,5 @@ export async function deleteServiceAction(id: string) {
   if (!result.success) return { success: false, message: result.message };
 
   updateTag(CACHE_TAGS.services);
-  redirect("/technician/services");
+  return { success: true };
 }
