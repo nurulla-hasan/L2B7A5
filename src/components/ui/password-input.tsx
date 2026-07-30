@@ -4,7 +4,7 @@ import { forwardRef, useState, type ComponentProps } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-const PasswordInput = forwardRef<HTMLInputElement, ComponentProps<"input">>(
+const PasswordInput = forwardRef<HTMLInputElement, Omit<ComponentProps<"input">, "size">>(
   ({ ...props }, ref) => {
     const [show, setShow] = useState(false);
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +28,7 @@ import {
 
 import { useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
 
@@ -43,7 +44,6 @@ export default function LoginPage() {
 
   async function onSubmit(data: LoginFormData) {
     const result = await loginAction(data, callbackUrl ?? undefined);
-    // Server action redirects on success — only errors reach here
     if (!result.success) {
       ErrorToast(result.message ?? "Login failed");
     }
@@ -122,5 +122,13 @@ export default function LoginPage() {
         </p>
       </CardContent>
     </Card>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

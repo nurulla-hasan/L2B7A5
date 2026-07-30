@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { HeroSection } from "@/components/home/hero-section";
 import { ServiceCategories } from "@/components/home/service-categories";
 import { HowItWorks } from "@/components/home/how-it-works";
@@ -10,7 +11,7 @@ import { CTASection } from "@/components/home/cta-section";
 export default function HomePage() {
   return (
     <>
-      <HeroSection />
+      <Suspense><HeroSection /></Suspense>
       <ServiceCategories />
       <HowItWorks />
       <FeaturedTechnicians />
