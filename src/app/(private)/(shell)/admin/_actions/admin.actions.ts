@@ -1,7 +1,6 @@
 "use server";
 
 import { updateTag } from "next/cache";
-import { redirect } from "next/navigation";
 import {
   createAdminCategory,
   updateAdminCategory,
@@ -15,7 +14,7 @@ export async function createCategoryAction(name: string) {
   if (!result.success) return { success: false, message: result.message };
 
   updateTag(CACHE_TAGS.categories);
-  redirect("/admin/categories");
+
 }
 
 export async function updateCategoryAction(id: string, name: string) {
@@ -23,7 +22,7 @@ export async function updateCategoryAction(id: string, name: string) {
   if (!result.success) return { success: false, message: result.message };
 
   updateTag(CACHE_TAGS.categories);
-  redirect("/admin/categories");
+
 }
 
 export async function deleteCategoryAction(id: string) {
@@ -31,7 +30,6 @@ export async function deleteCategoryAction(id: string) {
   if (!result.success) return { success: false, message: result.message };
 
   updateTag(CACHE_TAGS.categories);
-  redirect("/admin/categories");
 }
 
 export async function updateUserStatusAction(
@@ -41,5 +39,6 @@ export async function updateUserStatusAction(
   const result = await updateUserStatus(id, activeStatus);
   if (!result.success) return { success: false, message: result.message };
 
-  redirect("/admin/users");
+  updateTag(CACHE_TAGS.user);
+  return { success: true };
 }

@@ -6,7 +6,9 @@ import type { Booking } from "@/interface/booking";
 import type { Category } from "@/interface/category";
 
 export function getAllUsers() {
-  return nextServerFetch<User[]>("/api/admin/users");
+  return nextServerFetch<User[]>("/api/admin/users", {
+    next: { tags: [CACHE_TAGS.user] },
+  });
 }
 
 export function updateUserStatus(

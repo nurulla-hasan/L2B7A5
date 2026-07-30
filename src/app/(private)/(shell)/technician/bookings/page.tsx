@@ -14,7 +14,7 @@ export default async function TechnicianBookingsPage() {
         description="View and manage your bookings."
         alignment="left"
         as="h3"
-      ></SectionHeading>
+      />
 
       <div>
         <DataTable columns={bookingColumns} data={bookings} />

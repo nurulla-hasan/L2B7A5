@@ -18,9 +18,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { User } from "@/interface/user";
 import { getInitials } from "@/lib/utils";
+import { logoutAction } from "@/app/(auth)/_actions/auth.actions";
 
 export function DashboardHeader({ user }: { user?: User | null }) {
   const fallback = user?.name ? getInitials(user.name) : <UserRound className="size-4" />;
+
+  const handleLogout = async () => {
+    await logoutAction();
+  };
   
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b bg-sidebar px-4 sm:px-6">
@@ -65,7 +70,7 @@ export function DashboardHeader({ user }: { user?: User | null }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
+            <DropdownMenuItem variant="destructive" onClick={handleLogout}>
               <LogOut className="size-4" />
               Logout
             </DropdownMenuItem>
