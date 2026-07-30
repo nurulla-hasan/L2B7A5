@@ -7,7 +7,6 @@ import { PageWrapper } from "@/components/common/page-wrapper";
 import CustomBreadcrumb from "@/components/common/custom-breadcrumb";
 import { BookingForm } from "../_components/booking-form";
 import type { Service } from "@/interface/service";
-import { Badge } from "@/components/ui/badge";
 
 export default async function CreateBookingPage({
   searchParams,

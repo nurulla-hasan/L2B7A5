@@ -14,6 +14,7 @@ import {
 } from "@/constants/booking";
 import type { BookingWithService } from "@/interface/booking";
 import { BookingDetailModal } from "./booking-detail-modal";
+import { ReviewFormModal } from "./review-form-modal";
 import {
   cancelBookingAction,
   createPaymentAction,
@@ -22,6 +23,7 @@ import {
 export function BookingCard({ booking }: { booking: BookingWithService }) {
   const canCancel = booking.status === "REQUESTED";
   const canPay = booking.status === "ACCEPTED";
+  const canReview = booking.status === "COMPLETED";
   const [, dispatch, isPending] = useActionState(cancelBookingAction, null);
   const [isPaying, startTransition] = useTransition();
 
@@ -92,6 +94,12 @@ export function BookingCard({ booking }: { booking: BookingWithService }) {
                 <CreditCard />
                 Pay Now
               </Button>
+            )}
+            {canReview && (
+              <ReviewFormModal
+                bookingId={booking.id}
+                bookingServiceName={booking.service?.name}
+              />
             )}
             {canCancel && (
               <ConfirmationModal
