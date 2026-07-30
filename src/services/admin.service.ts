@@ -2,7 +2,7 @@ import "server-only";
 import { nextServerFetch } from "@/lib/nextServerFetch";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { User } from "@/interface/user";
-import type { Booking } from "@/interface/booking";
+import type { BookingWithRelations } from "@/interface/booking";
 import type { Category } from "@/interface/category";
 
 export function getAllUsers() {
@@ -22,7 +22,9 @@ export function updateUserStatus(
 }
 
 export function getAllBookings() {
-  return nextServerFetch<Booking[]>("/api/admin/bookings");
+  return nextServerFetch<BookingWithRelations[]>("/api/admin/bookings", {
+    next: { tags: ["bookings"] },
+  });
 }
 
 export function getAdminCategories() {
