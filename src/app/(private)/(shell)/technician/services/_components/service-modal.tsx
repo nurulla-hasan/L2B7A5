@@ -45,7 +45,7 @@ export function ServiceModal({
   
   const isEdit = actionType === "edit";
 
-  const { control, handleSubmit, reset, formState: { isSubmitting } } = useForm<CreateServiceFormData>({
+  const { control, handleSubmit, reset, formState: { isSubmitting, isDirty } } = useForm<CreateServiceFormData>({
     resolver: zodResolver(createServiceSchema),
     defaultValues: {
       name: defaultData?.name || "",
@@ -69,7 +69,6 @@ export function ServiceModal({
       reset();
     }
   }
-
 
   const trigger = isEdit ? (
     <Button variant="ghost">
@@ -127,7 +126,7 @@ export function ServiceModal({
           <Button type="button" variant="outline" onClick={() => { setOpen(false); reset(); }} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button type="submit" loading={isSubmitting} loadingText={isEdit ? "Updating..." : "Creating..."}>
+          <Button type="submit" loading={isSubmitting} loadingText={isEdit ? "Updating..." : "Creating..."} disabled={!isDirty && isEdit}>
             {isEdit ? "Update" : "Create"}
           </Button>
         </div>

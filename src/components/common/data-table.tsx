@@ -53,6 +53,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   limit?: number;
   meta?: PaginationMeta;
+  tableMeta?: Record<string, unknown>;
 
   /**
    * The key in the URL for searching.
@@ -73,6 +74,7 @@ function DataTableInner<TData, TValue>({
   data,
   limit = 10,
   meta,
+  tableMeta,
   searchKey,
   searchPlaceholder,
   showFooter = false,
@@ -126,6 +128,7 @@ function DataTableInner<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: meta ? undefined : getPaginationRowModel(),
+    meta: tableMeta,
   });
 
   return (

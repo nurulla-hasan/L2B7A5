@@ -18,9 +18,16 @@ import { formatPrice, formatDate, SuccessToast, ErrorToast } from "@/lib/utils";
 import { ServiceModal } from "./service-modal";
 import { ConfirmationModal } from "@/components/common/confirmation-modal";
 
+import type { Category } from "@/interface/category";
 import { deleteServiceAction } from "../../_actions/technician.actions";
 
-const ActionsCell = ({ service }: { service: Service }) => {
+const ActionsCell = ({
+  service,
+  categories,
+}: {
+  service: Service;
+  categories?: Category[];
+}) => {
   return (
     <div className="flex justify-end">
       <DropdownMenu>
@@ -43,7 +50,11 @@ const ActionsCell = ({ service }: { service: Service }) => {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <div>
-              <ServiceModal actionType="edit" defaultData={service} />
+              <ServiceModal
+                actionType="edit"
+                defaultData={service}
+                categories={categories}
+              />
             </div>
             <ConfirmationModal
               triggerText="Delete Service"
@@ -135,6 +146,9 @@ export const serviceColumns: ColumnDef<Service>[] = [
   {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
-    cell: ({ row }) => <ActionsCell service={row.original} />,
+    cell: ({ row, table }) => {
+      const tableMeta = table.options.meta as { categories?: Category[] } | undefined;
+      return <ActionsCell service={row.original} categories={tableMeta?.categories} />;
+    },
   },
 ];

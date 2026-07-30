@@ -25,7 +25,11 @@ export default async function TechnicianServicesPage() {
       </SectionHeading>
 
       <div>
-        <DataTable columns={serviceColumns} data={services} />
+        <DataTable
+          columns={serviceColumns}
+          data={services}
+          tableMeta={{ categories }}
+        />
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import { toast } from "sonner";
 
 import {
   DropdownMenu,
@@ -21,9 +20,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { formatPrice } from "@/lib/utils";
+import { ErrorToast, formatPrice, SuccessToast } from "@/lib/utils";
 import type { TechnicianBooking, BookingStatus } from "@/interface/booking";
-import { useTransition } from "react";
+import { useState } from "react";
 import { updateBookingStatusAction } from "../../_actions/technician.actions";
 
 const StatusBadge = ({ status }: { status: BookingStatus }) => {
@@ -51,25 +50,25 @@ const StatusBadge = ({ status }: { status: BookingStatus }) => {
 };
 
 const ActionsCell = ({ booking }: { booking: TechnicianBooking }) => {
-  const [isPending, startTransition] = useTransition();
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const handleUpdateStatus = (status: BookingStatus) => {
-    startTransition(async () => {
-      const res = await updateBookingStatusAction(booking.id, status);
-      if (res?.success) {
-        toast.success(`Booking status updated to ${status}`);
-      } else {
-        toast.error(res?.message || "Failed to update booking status");
-      }
-    });
+  const handleUpdateStatus = async (status: BookingStatus) => {
+    setIsUpdating(true);
+    const res = await updateBookingStatusAction(booking.id, status);
+    setIsUpdating(false);
+    if (res?.success) {
+      SuccessToast(`Booking status updated to ${status}`);
+    } else {
+      ErrorToast(res?.message || "Failed to update booking status");
+    }
   };
 
   return (
     <div className="flex justify-end">
       <DropdownMenu>
-        <DropdownMenuTrigger className="mr-4" disabled={isPending}>
+        <DropdownMenuTrigger className="mr-4" disabled={isUpdating}>
           <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontal />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-fit">
           <DropdownMenuGroup>
