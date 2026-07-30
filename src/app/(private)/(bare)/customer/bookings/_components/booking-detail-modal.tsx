@@ -48,7 +48,7 @@ export function BookingDetailModal({
       open={open}
       onOpenChange={handleOpenChange}
       actionTrigger={
-        <Button variant="ghost" size="icon-sm">
+        <Button variant="outline" size="icon-sm">
           <Eye className="size-4" />
         </Button>
       }

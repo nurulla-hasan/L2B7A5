@@ -1,11 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import {
-  createBooking,
-  cancelBooking,
-  getSingleBooking,
-} from "@/services/booking.service";
+import { createBooking, cancelBooking, getSingleBooking } from "@/services/booking.service";
+import { createPayment } from "@/services/payment.service";
 import { createReview } from "@/services/review.service";
 
 export async function createBookingAction(data: {
@@ -35,6 +32,17 @@ export async function cancelBookingAction(
 
 export async function getBookingDetailAction(bookingId: string) {
   return getSingleBooking(bookingId);
+}
+
+export async function createPaymentAction(bookingId: string) {
+  const result = await createPayment(bookingId);
+
+  if (!result.success) return { success: false as const, message: result.message };
+
+  return {
+    success: true as const,
+    paymentUrl: result.data.paymentUrl,
+  };
 }
 
 export async function createReviewAction(data: {

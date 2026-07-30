@@ -11,7 +11,7 @@ export function getSinglePayment(id: string) {
 }
 
 export function createPayment(bookingId: string) {
-  return nextServerFetch<{ url: string }>("/api/payments/create", {
+  return nextServerFetch<{ paymentUrl: string; transactionId: string; amount: number }>("/api/payments/create", {
     method: "POST",
     body: { bookingId },
   });

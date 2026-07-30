@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -70,20 +70,17 @@ export function BookingForm({ service }: BookingFormProps) {
   const [success, setSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const onFormSubmit = useCallback(
-    async (data: CreateBookingFormData) => {
-      setSubmitError(null);
-      const result = await createBookingAction(data);
+  async function onFormSubmit(data: CreateBookingFormData) {
+    setSubmitError(null);
+    const result = await createBookingAction(data);
 
-      if (result?.success === false) {
-        setSubmitError(result.message || "Failed to create booking.");
-        return;
-      }
+    if (result?.success === false) {
+      setSubmitError(result.message || "Failed to create booking.");
+      return;
+    }
 
-      setSuccess(true);
-    },
-    [],
-  );
+    setSuccess(true);
+  }
 
   if (success) {
     return (

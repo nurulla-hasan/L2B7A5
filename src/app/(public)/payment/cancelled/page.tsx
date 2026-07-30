@@ -1,23 +1,23 @@
 import Link from "next/link";
-import { CheckCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/common/page-wrapper";
 
-export default function PaymentSuccessPage() {
+export default function PaymentCancelledPage() {
   return (
     <PageWrapper>
       <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
-        <div className="rounded-full bg-success/10 p-4">
-          <CheckCircle className="size-12 text-success" />
+        <div className="rounded-full bg-warning/10 p-4">
+          <XCircle className="size-12 text-warning" />
         </div>
-        <h1 className="mt-6 text-2xl font-bold">Payment Successful!</h1>
+        <h1 className="mt-6 text-2xl font-bold">Payment Cancelled</h1>
         <p className="mt-2 text-muted-foreground">
-          Your payment has been processed successfully. Your booking is now confirmed.
+          You have cancelled the payment. No charges have been made.
         </p>
         <div className="mt-8 flex gap-4">
           <Link href="/customer/bookings">
-            <Button>View My Bookings</Button>
+            <Button>Back to Bookings</Button>
           </Link>
           <Link href="/">
             <Button variant="outline">Back to Home</Button>
