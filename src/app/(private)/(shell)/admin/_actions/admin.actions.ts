@@ -14,7 +14,7 @@ export async function createCategoryAction(name: string) {
   if (!result.success) return { success: false, message: result.message };
 
   updateTag(CACHE_TAGS.categories);
-
+  return { success: true, data: result.data };
 }
 
 export async function updateCategoryAction(id: string, name: string) {
@@ -22,7 +22,7 @@ export async function updateCategoryAction(id: string, name: string) {
   if (!result.success) return { success: false, message: result.message };
 
   updateTag(CACHE_TAGS.categories);
-
+  return { success: true };
 }
 
 export async function deleteCategoryAction(id: string) {
@@ -30,6 +30,7 @@ export async function deleteCategoryAction(id: string) {
   if (!result.success) return { success: false, message: result.message };
 
   updateTag(CACHE_TAGS.categories);
+  return { success: true };
 }
 
 export async function updateUserStatusAction(

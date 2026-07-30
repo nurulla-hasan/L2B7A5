@@ -34,14 +34,14 @@ export function getAdminCategories() {
 export function createAdminCategory(name: string) {
   return nextServerFetch<Category>("/api/admin/categories", {
     method: "POST",
-    body: { name },
+    body: { name }
   });
 }
 
 export function updateAdminCategory(id: string, name: string) {
   return nextServerFetch<Category>(`/api/admin/categories/${id}`, {
     method: "PATCH",
-    body: { name },
+    body: { name }
   });
 }
 
