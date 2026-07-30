@@ -218,15 +218,15 @@ export function BookingForm({ service }: BookingFormProps) {
                   <FieldContent>
                     {scheduleDate ? (
                       availableSlots.length > 0 ? (
-                        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                           {availableSlots.map((slot) => {
                             const isSelected = value === slot;
                             return (
-                              <button
+                              <Button
                                 key={slot}
                                 type="button"
                                 onClick={() => onChange(slot)}
-                                className={`flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                                className={`${
                                   isSelected
                                     ? "border-primary bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20"
                                     : "border-border/60 bg-background/60 text-foreground/80 hover:border-primary/40 hover:bg-card hover:text-foreground"
@@ -234,7 +234,7 @@ export function BookingForm({ service }: BookingFormProps) {
                               >
                                 <Clock className="size-3.5" />
                                 <span>{slot}</span>
-                              </button>
+                              </Button>
                             );
                           })}
                         </div>

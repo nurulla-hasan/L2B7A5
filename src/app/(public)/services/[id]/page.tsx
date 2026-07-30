@@ -224,7 +224,7 @@ export default async function ServiceDetailPage({
               </CardContent>
               <CardFooter>
                 <Link href={`/customer/bookings/create?serviceId=${service.id}`} className="w-full">
-                  <Button className="w-full gap-2 rounded-xl text-sm font-semibold shadow-md transition-all duration-200 hover:shadow-lg">
+                  <Button className="w-full">
                     <Calendar className="size-4" />
                     Proceed to Book
                   </Button>

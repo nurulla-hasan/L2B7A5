@@ -27,7 +27,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import BackButton from "@/components/common/back-button";
 import type { TechnicianWithProfile } from "@/interface/user";
 
 export default async function TechnicianDetailPage({
@@ -58,9 +57,6 @@ export default async function TechnicianDetailPage({
           { name: technician.name, isCurrent: true },
         ]}
       />
-
-      {/* ── Back Button ─────────────────────────────────────── */}
-      <BackButton className="mb-4" />
 
       {/* ── Main Layout ─────────────────────────────────────── */}
       <div className="grid gap-8 lg:grid-cols-3">

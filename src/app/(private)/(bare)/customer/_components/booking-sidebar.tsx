@@ -84,7 +84,7 @@ export function BookingSidebar({
 
         <CardFooter className="flex-col gap-3">
           {submitError && (
-            <div className="w-full rounded-lg border border-destructive/30 bg-destructive/10 p-2.5 text-center text-xs font-medium text-destructive">
+            <div className="w-full rounded-md border border-destructive/30 bg-destructive/10 p-2 text-center text-xs font-medium text-destructive">
               {submitError}
             </div>
           )}

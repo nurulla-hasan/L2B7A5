@@ -72,9 +72,9 @@ export function ServiceCard({ service }: ServiceCardProps) {
         <Link href={`/services/${service.id}`} className="w-full">
           <Button
             size="sm"
-            className="w-full gap-2 rounded-lg font-medium shadow-xs transition-all duration-200 group-hover:bg-primary group-hover:shadow-md"
+            className="w-full"
           >
-            <span>Book Now</span>
+            <span>View Details</span>
             <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
           </Button>
         </Link>
