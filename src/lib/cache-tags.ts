@@ -5,6 +5,7 @@ export const CACHE_TAGS = {
   technicians: "technicians",
   technician: (id: string) => `technician-${id}`,
   user: "user",
+  payments: "payments",
 } as const;
 
 export const CACHE_TIME = {
