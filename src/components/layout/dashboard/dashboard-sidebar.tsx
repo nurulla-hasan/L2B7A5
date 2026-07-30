@@ -23,8 +23,8 @@ export function DashboardSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <div className="flex h-14 items-center border-b px-4">
-          <Logo size="sm" showText />
+        <div className="flex h-16 items-center border-b px-4">
+          <Logo size="md" showText />
         </div>
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
@@ -35,7 +35,7 @@ export function DashboardSidebar() {
                   pathname === link.href || pathname.startsWith(link.href + "/");
                 return (
                   <SidebarMenuItem key={link.href}>
-                    <SidebarMenuButton isActive={isActive} render={<Link href={link.href} />}>
+                    <SidebarMenuButton size="lg" isActive={isActive} render={<Link href={link.href} />}>
                       <link.icon />
                       <span>{link.label}</span>
                     </SidebarMenuButton>

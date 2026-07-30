@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { isValidElement, type ReactNode } from "react";
+import { isValidElement, useState, type ReactNode } from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
@@ -24,11 +24,21 @@ interface ConfirmationModalProps {
   cancelText?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   isLoading?: boolean;
   trigger?: ReactNode;
   actionTrigger?: ReactNode;
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  triggerText?: string;
+  triggerIcon?: ReactNode;
+  triggerVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  triggerSize?: "default" | "sm" | "lg" | "icon";
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
   children?: ReactNode;
 }
 
@@ -44,26 +54,51 @@ export function ConfirmationModal({
   isLoading,
   trigger,
   actionTrigger,
+  triggerText,
+  triggerIcon = <Trash2 />,
+  triggerVariant = "outline",
+  triggerSize = "icon",
   variant = "default",
   children,
 }: ConfirmationModalProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const [internalLoading, setInternalLoading] = useState(false);
+  const isControlled = open !== undefined;
+  const isOpen = isControlled ? open : internalOpen;
+  const showLoading = isControlled ? isLoading : internalLoading;
+  const handleOpenChange = isControlled ? onOpenChange : setInternalOpen;
   const finalTrigger = actionTrigger || trigger;
 
+  const handleConfirm = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    if (!isControlled) setInternalLoading(true);
+    try {
+      await onConfirm();
+    } finally {
+      if (!isControlled) {
+        setInternalLoading(false);
+        setInternalOpen(false);
+      }
+    }
+  };
+
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>      {finalTrigger !== null && (
+    <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
+      {" "}
+      {finalTrigger !== null && (
         <AlertDialogTrigger
           render={
             isValidElement(finalTrigger) ? (
               finalTrigger
             ) : (
-              <Button variant="outline" size="icon">
-                <Trash2 />
+              <Button variant={triggerVariant} size={triggerSize}>
+                {triggerIcon}
+                {triggerText}
               </Button>
             )
           }
         />
       )}
-
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
@@ -73,16 +108,15 @@ export function ConfirmationModal({
         {children}
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>{cancelText}</AlertDialogCancel>
+          <AlertDialogCancel disabled={showLoading}>
+            {cancelText}
+          </AlertDialogCancel>
           <AlertDialogAction
-            onClick={(e: { preventDefault: () => void; }) => {
-              e.preventDefault();
-              onConfirm();
-            }}
+            onClick={handleConfirm}
             variant={variant}
-            disabled={isLoading}
+            disabled={showLoading}
           >
-            {isLoading ? (
+            {showLoading ? (
               <>
                 <Spinner />
                 {loadingText}

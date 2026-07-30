@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Edit, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -13,31 +13,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Service } from "@/interface/service";
-import { formatPrice, formatDate, SuccessToast } from "@/lib/utils";
+import { formatPrice, formatDate, SuccessToast, ErrorToast } from "@/lib/utils";
 
 import { ServiceModal } from "./service-modal";
+import { ConfirmationModal } from "@/components/common/confirmation-modal";
 
-import { useState } from "react";
-
-import { Category } from "@/interface/category";
-import { getCategoriesAction } from "../../_actions/technician.actions";
+import { deleteServiceAction } from "../../_actions/technician.actions";
 
 const ActionsCell = ({ service }: { service: Service }) => {
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[] | null>(null);
-
-  const handleEditClick = async () => {
-    setIsEditOpen(true);
-    if (categories === null) {
-      const res = await getCategoriesAction();
-      if (res && res.success) {
-        setCategories(res.data);
-      } else {
-        setCategories([]);
-      }
-    }
-  };
-
   return (
     <div className="flex justify-end">
       <DropdownMenu>
@@ -59,28 +42,31 @@ const ActionsCell = ({ service }: { service: Service }) => {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem 
-              className="cursor-pointer w-full text-left" 
-              onClick={handleEditClick}
-            >
-              <Edit className="mr-2 h-4 w-4" />
-              Edit Service
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete Service
-            </DropdownMenuItem>
+            <div>
+              <ServiceModal actionType="edit" defaultData={service} />
+            </div>
+            <ConfirmationModal
+              triggerText="Delete Service"
+              triggerIcon={<Trash2 />}
+              triggerVariant="ghost"
+              triggerSize="default"
+              title="Delete Service"
+              description={`Are you sure you want to delete "${service.name}"? This action cannot be undone.`}
+              confirmText="Delete"
+              loadingText="Deleting..."
+              variant="destructive"
+              onConfirm={async () => {
+                const result = await deleteServiceAction(service.id);
+                if (result.success) {
+                  SuccessToast("Service deleted successfully");
+                } else {
+                  ErrorToast(result.message || "Failed to delete service");
+                }
+              }}
+            />
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <ServiceModal
-        categories={categories || []}
-        open={isEditOpen}
-        onOpenChange={setIsEditOpen}
-        actionType="edit"
-        defaultData={service}
-      />
     </div>
   );
 };
@@ -92,7 +78,10 @@ export const serviceColumns: ColumnDef<Service>[] = [
     cell: ({ row }) => (
       <div className="flex flex-col gap-0.5">
         <span className="font-medium text-foreground">{row.original.name}</span>
-        <span className="text-xs text-muted-foreground truncate max-w-62" title={row.original.description}>
+        <span
+          className="text-xs text-muted-foreground truncate max-w-62"
+          title={row.original.description}
+        >
           {row.original.description}
         </span>
       </div>

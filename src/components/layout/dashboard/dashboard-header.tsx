@@ -23,7 +23,7 @@ export function DashboardHeader({ user }: { user?: User | null }) {
   const fallback = user?.name ? getInitials(user.name) : <UserRound className="size-4" />;
   
   return (
-    <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-sidebar px-4 sm:px-6">
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b bg-sidebar px-4 sm:px-6">
       {/* Mobile Sidebar Trigger */}
       <SidebarTrigger className="lg:hidden" />
 
