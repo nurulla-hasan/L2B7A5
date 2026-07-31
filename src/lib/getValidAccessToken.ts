@@ -53,7 +53,7 @@ export const getValidAccessToken = async (): Promise<ValidAccessTokenResult> => 
     }
 
     const response = await fetch(
-      `${baseUrl.replace(/\/+$/, "")}/auth/refresh-token`,
+      `${baseUrl.replace(/\/+$/, "")}/api/auth/refresh-token`,
       {
         method: "POST",
         headers: {

@@ -10,9 +10,23 @@ type NextServerFetchOptions = Omit<RequestInit, "body"> & {
   next?: NextFetchRequestConfig;
 };
 
-type ApiResult<T> =
-  | { success: true; data: T; status: number }
-  | { success: false; message: string; status: number };
+// Mirrors the backend's `sendResponse` / `globalErrorHandler` bodies exactly —
+// nextServerFetch returns these verbatim, so callers see the same shape as Postman.
+export type ApiSuccess<T> = {
+  success: true;
+  statusCode: number;
+  message: string;
+  data: T;
+  meta?: { page: number; limit: number; total: number };
+};
+
+export type ApiFailure = {
+  success: false;
+  statusCode: number;
+  message: string;
+};
+
+export type ApiResult<T> = ApiSuccess<T> | ApiFailure;
 
 export class ApiError extends Error {
   status: number;
@@ -71,18 +85,6 @@ const parseJsonResponse = async (response: Response): Promise<unknown> => {
   }
 };
 
-const buildErrorMessage = (errorData: unknown, status: number): string => {
-  if (
-    isObject(errorData) &&
-    typeof errorData.message === "string" &&
-    errorData.message.trim()
-  ) {
-    return errorData.message.trim();
-  }
-
-  return `Request failed with status ${status}`;
-};
-
 const prepareBody = (
   body: unknown,
   headers: Headers,
@@ -137,8 +139,8 @@ export const nextServerFetch = async <T>(
     if (!baseUrl) {
       return {
         success: false,
+        statusCode: 500,
         message: "NEXT_PUBLIC_API_URL is not defined",
-        status: 500,
       };
     }
 
@@ -147,8 +149,8 @@ export const nextServerFetch = async <T>(
     if (auth === "required" && !accessToken) {
       return {
         success: false,
+        statusCode: 401,
         message: "Authorization token is required",
-        status: 401,
       };
     }
 
@@ -172,30 +174,33 @@ export const nextServerFetch = async <T>(
       const message = error instanceof Error ? error.message : "Network error";
       return {
         success: false,
+        statusCode: 503,
         message: `Unable to connect to backend server (${normalizedBaseUrl}): ${message}`,
-        status: 503,
       };
     }
 
     const responseData = await parseJsonResponse(response);
 
     if (!response.ok) {
+      // Backend error bodies already match the failure shape — return verbatim.
+      // Only synthesize a message when there's no parseable body.
+      if (
+        isObject(responseData) &&
+        typeof responseData.message === "string" &&
+        responseData.message.trim()
+      ) {
+        return responseData as ApiFailure;
+      }
+
       return {
         success: false,
-        message: buildErrorMessage(responseData, response.status),
-        status: response.status,
+        statusCode: response.status,
+        message: `Request failed with status ${response.status}`,
       };
     }
 
-    // Auto-unwrap backend's `data` field so callers don't need .data.data
-    const unwrapped =
-      responseData &&
-      typeof responseData === "object" &&
-      "data" in (responseData as Record<string, unknown>)
-        ? (responseData as Record<string, unknown>).data
-        : responseData;
-
-    return { success: true, data: unwrapped as T, status: response.status };
+    // Return the backend's success body verbatim — same as Postman.
+    return responseData as ApiSuccess<T>;
   } catch (error) {
     // ApiError is a normal runtime failure (e.g. invalid JSON response).
     // Anything else is a programming error (e.g. GET with a body, unsupported
@@ -206,11 +211,11 @@ export const nextServerFetch = async <T>(
 
     return {
       success: false,
+      statusCode: error instanceof ApiError ? error.status : 500,
       message:
         error instanceof ApiError
           ? error.message
           : "An unexpected error occurred",
-      status: error instanceof ApiError ? error.status : 500,
     };
   }
 };

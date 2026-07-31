@@ -17,7 +17,7 @@ export default async function ServicesPage({
 }) {
   const params = await searchParams;
 
-  // ── Fetch filtered data from API ────────────────────────
+  // ------- Fetch filtered data from API -------
   const [servicesRes, categoriesRes] = await Promise.allSettled([
     getAllServices(params),
     getAllCategories(),
@@ -35,7 +35,7 @@ export default async function ServicesPage({
 
   return (
     <PageWrapper paddingSize="small">
-      {/* ── Breadcrumb Navigation ────────────────────────────── */}
+      {/* ------- Breadcrumb Navigation ------- */}
       <CustomBreadcrumb
         links={[
           { href: "/", name: "Home" },
@@ -43,7 +43,7 @@ export default async function ServicesPage({
         ]}
       />
 
-      {/* ── Hero Banner Header ───────────────────────────────── */}
+      {/* ------- Hero Banner Header ------- */}
       <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-linear-to-br from-primary/10 via-background to-primary/5 p-6 md:p-8 mt-2 mb-8 shadow-xs">
         <div className="absolute -right-12 -top-12 size-48 rounded-full bg-primary/10 blur-3xl" />
         <div className="relative z-10 max-w-2xl space-y-3">
@@ -73,14 +73,14 @@ export default async function ServicesPage({
         </div>
       </div>
 
-      {/* ── Main Layout (Filter + Grid) ──────────────────────── */}
+      {/* ------- Main Layout (Filter + Grid) ------- */}
       <div className="flex flex-col gap-6 md:flex-row md:gap-8">
-        {/* ── Filter Sidebar (Client Component) ───────────── */}
+        {/* ------- Filter Sidebar (Client Component) ------- */}
         <div className="w-full shrink-0 md:w-64 lg:w-72">
           <ServiceFilter categories={categories} />
         </div>
 
-        {/* ── Services Content Grid ────────────────────────── */}
+        {/* ------- Services Content Grid ------- */}
         <div className="min-w-0 flex-1 space-y-5">
           {/* Results Bar */}
           <div className="flex items-center justify-between rounded-lg border border-border/40 bg-card/60 px-4 py-3 backdrop-blur-xs">
