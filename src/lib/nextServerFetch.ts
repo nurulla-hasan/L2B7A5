@@ -4,23 +4,10 @@ import { cookies } from "next/headers";
 
 type AuthMode = "required" | "optional" | "none";
 
-type NextServerFetchOptions = Omit<
-  RequestInit,
-  "body"
-> & {
+type NextServerFetchOptions = Omit<RequestInit, "body"> & {
   body?: unknown;
   auth?: AuthMode;
   next?: NextFetchRequestConfig;
-};
-
-type ErrorSource = {
-  path?: string | number;
-  message?: string;
-};
-
-type ErrorResponse = {
-  message?: string;
-  errorSources?: ErrorSource[];
 };
 
 type ApiResult<T> =
@@ -85,43 +72,15 @@ const parseJsonResponse = async (response: Response): Promise<unknown> => {
 };
 
 const buildErrorMessage = (errorData: unknown, status: number): string => {
-  if (!isObject(errorData)) {
-    return `Request failed with status ${status}`;
+  if (
+    isObject(errorData) &&
+    typeof errorData.message === "string" &&
+    errorData.message.trim()
+  ) {
+    return errorData.message.trim();
   }
 
-  const data = errorData as ErrorResponse;
-
-  const baseMessage =
-    typeof data.message === "string" && data.message.trim()
-      ? data.message.trim()
-      : `Request failed with status ${status}`;
-
-  const errorSources = Array.isArray(data.errorSources)
-    ? data.errorSources
-    : [];
-
-  const details = errorSources
-    .map((source) => {
-      const message =
-        typeof source.message === "string" ? source.message.trim() : "";
-
-      if (!message || message === baseMessage) {
-        return null;
-      }
-
-      const path =
-        typeof source.path === "string" || typeof source.path === "number"
-          ? String(source.path).trim()
-          : "";
-
-      return path ? `${path} - ${message}` : message;
-    })
-    .filter(
-      (value, index, values): value is string =>
-        Boolean(value) && values.indexOf(value) === index,
-    );
-
-  return details.length ? `${baseMessage}: ${details.join(", ")}` : baseMessage;
+  return `Request failed with status ${status}`;
 };
 
 const prepareBody = (
@@ -137,17 +96,12 @@ const prepareBody = (
     throw new TypeError(`${method} requests cannot include a body`);
   }
 
-  if (
-    body instanceof FormData ||
-    body instanceof URLSearchParams ||
-    body instanceof Blob ||
-    body instanceof ArrayBuffer ||
-    ArrayBuffer.isView(body) ||
-    typeof body === "string"
-  ) {
-    return body as BodyInit;
+  // File uploads (multipart/form-data) — e.g. profile image
+  if (body instanceof FormData) {
+    return body;
   }
 
+  // JSON payloads — used by ~80% of API calls
   if (isPlainObject(body) || Array.isArray(body)) {
     if (!headers.has("Content-Type")) {
       headers.set("Content-Type", "application/json");
@@ -181,13 +135,21 @@ export const nextServerFetch = async <T>(
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
     if (!baseUrl) {
-      return { success: false, message: "NEXT_PUBLIC_API_URL is not defined", status: 500 };
+      return {
+        success: false,
+        message: "NEXT_PUBLIC_API_URL is not defined",
+        status: 500,
+      };
     }
 
     const accessToken = auth === "none" ? null : await getAccessToken();
 
     if (auth === "required" && !accessToken) {
-      return { success: false, message: "Authorization token is required", status: 401 };
+      return {
+        success: false,
+        message: "Authorization token is required",
+        status: 401,
+      };
     }
 
     if (accessToken) {
@@ -235,6 +197,13 @@ export const nextServerFetch = async <T>(
 
     return { success: true, data: unwrapped as T, status: response.status };
   } catch (error) {
+    // ApiError is a normal runtime failure (e.g. invalid JSON response).
+    // Anything else is a programming error (e.g. GET with a body, unsupported
+    // body type) — log it so it is not silently swallowed during development.
+    if (!(error instanceof ApiError)) {
+      console.error("[nextServerFetch] Unexpected error:", error);
+    }
+
     return {
       success: false,
       message:

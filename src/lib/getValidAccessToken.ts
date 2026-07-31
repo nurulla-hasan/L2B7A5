@@ -16,6 +16,10 @@ type RefreshResponse = {
   };
 };
 
+export type ValidAccessTokenResult =
+  | { ok: true; token: string }
+  | { ok: false; message: string };
+
 const isTokenFresh = (token: string): boolean => {
   try {
     const { exp } = jwtDecode<TokenPayload>(token);
@@ -26,69 +30,77 @@ const isTokenFresh = (token: string): boolean => {
   }
 };
 
-export const getValidAccessToken = async (): Promise<string> => {
-  const cookieStore = await cookies();
+export const getValidAccessToken = async (): Promise<ValidAccessTokenResult> => {
+  try {
+    const cookieStore = await cookies();
 
-  const accessToken = cookieStore.get("accessToken")?.value;
+    const accessToken = cookieStore.get("accessToken")?.value;
 
-  if (accessToken && isTokenFresh(accessToken)) {
-    return accessToken;
-  }
+    if (accessToken && isTokenFresh(accessToken)) {
+      return { ok: true, token: accessToken };
+    }
 
-  const refreshToken = cookieStore.get("refreshToken")?.value;
+    const refreshToken = cookieStore.get("refreshToken")?.value;
 
-  if (!refreshToken) {
-    throw new ApiError("Authentication session has expired", 401, null);
-  }
+    if (!refreshToken) {
+      throw new ApiError("Authentication session has expired", 401, null);
+    }
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_URL is not defined");
-  }
+    if (!baseUrl) {
+      throw new Error("NEXT_PUBLIC_API_URL is not defined");
+    }
 
-  const response = await fetch(
-    `${baseUrl.replace(/\/+$/, "")}/auth/refresh-token`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${baseUrl.replace(/\/+$/, "")}/auth/refresh-token`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refreshToken,
+        }),
+        cache: "no-store",
       },
-      body: JSON.stringify({
-        refreshToken,
-      }),
-      cache: "no-store",
-    },
-  );
-
-  const result = (await response
-    .json()
-    .catch(() => null)) as RefreshResponse | null;
-
-  const newAccessToken = result?.data?.accessToken;
-
-  if (!response.ok || !newAccessToken) {
-    throw new ApiError(
-      result?.message || "Unable to refresh authentication",
-      response.status || 401,
-      result,
     );
+
+    const result = (await response
+      .json()
+      .catch(() => null)) as RefreshResponse | null;
+
+    const newAccessToken = result?.data?.accessToken;
+
+    if (!response.ok || !newAccessToken) {
+      throw new ApiError(
+        result?.message || "Unable to refresh authentication",
+        response.status || 401,
+        result,
+      );
+    }
+
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax" as const,
+      path: "/",
+    };
+
+    cookieStore.set("accessToken", newAccessToken, cookieOptions);
+
+    const newRefreshToken = result?.data?.refreshToken;
+
+    if (newRefreshToken) {
+      cookieStore.set("refreshToken", newRefreshToken, cookieOptions);
+    }
+
+    return { ok: true, token: newAccessToken };
+  } catch (error: unknown) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error ? error.message : "Authentication failed",
+    };
   }
-
-  const cookieOptions = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax" as const,
-    path: "/",
-  };
-
-  cookieStore.set("accessToken", newAccessToken, cookieOptions);
-
-  const newRefreshToken = result?.data?.refreshToken;
-
-  if (newRefreshToken) {
-    cookieStore.set("refreshToken", newRefreshToken, cookieOptions);
-  }
-
-  return newAccessToken;
 };

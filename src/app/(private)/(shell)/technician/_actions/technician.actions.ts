@@ -1,8 +1,8 @@
 "use server";
 
-import { updateTag } from "next/cache";
-import { redirect } from "next/navigation";
+import { updateTag, refresh } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache-tags";
+import { getValidAccessToken } from "@/lib/getValidAccessToken";
 import {
   updateTechnicianProfile,
   updateTechnicianAvailability,
@@ -24,27 +24,38 @@ export async function updateProfileAction(data: {
   experience: string;
   pricing: number;
 }) {
+  const auth = await getValidAccessToken();
+  if (!auth.ok) return { success: false as const, message: auth.message };
+
   const result = await updateTechnicianProfile(data);
-  if (!result.success) return { success: false, message: result.message };
+  if (!result.success) return { success: false as const, message: result.message };
 
   updateTag(CACHE_TAGS.technicians);
-  return { success: true };
+  updateTag(CACHE_TAGS.user);
+  return { success: true as const };
 }
 
 export async function updateAvailabilityAction(
   availability: Record<string, string[]>,
 ) {
-  const result = await updateTechnicianAvailability(availability);
-  if (!result.success) return { success: false, message: result.message };
+  const auth = await getValidAccessToken();
+  if (!auth.ok) return { success: false as const, message: auth.message };
 
-  return { success: true };
+  const result = await updateTechnicianAvailability(availability);
+  if (!result.success) return { success: false as const, message: result.message };
+
+  return { success: true as const };
 }
 
 export async function updateBookingStatusAction(id: string, status: string) {
-  const result = await updateBookingStatus(id, status);
-  if (!result.success) return { success: false, message: result.message };
+  const auth = await getValidAccessToken();
+  if (!auth.ok) return { success: false as const, message: auth.message };
 
-  redirect("/technician/bookings");
+  const result = await updateBookingStatus(id, status);
+  if (!result.success) return { success: false as const, message: result.message };
+
+  refresh();
+  return { success: true as const };
 }
 
 export async function createServiceAction(data: {
@@ -54,11 +65,14 @@ export async function createServiceAction(data: {
   location: string;
   categoryId: string;
 }) {
+  const auth = await getValidAccessToken();
+  if (!auth.ok) return { success: false as const, message: auth.message };
+
   const result = await createService(data);
-  if (!result.success) return { success: false, message: result.message };
+  if (!result.success) return { success: false as const, message: result.message };
 
   updateTag(CACHE_TAGS.services);
-  return { success: true };
+  return { success: true as const };
 }
 
 export async function updateServiceAction(
@@ -70,18 +84,24 @@ export async function updateServiceAction(
     categoryId: string;
   }>,
 ) {
+  const auth = await getValidAccessToken();
+  if (!auth.ok) return { success: false as const, message: auth.message };
+
   const result = await updateService(id, data);
-  if (!result.success) return { success: false, message: result.message };
+  if (!result.success) return { success: false as const, message: result.message };
 
   updateTag(CACHE_TAGS.services);
   updateTag(CACHE_TAGS.service(id));
-  return { success: true };
+  return { success: true as const };
 }
 
 export async function deleteServiceAction(id: string) {
+  const auth = await getValidAccessToken();
+  if (!auth.ok) return { success: false as const, message: auth.message };
+
   const result = await deleteService(id);
-  if (!result.success) return { success: false, message: result.message };
+  if (!result.success) return { success: false as const, message: result.message };
 
   updateTag(CACHE_TAGS.services);
-  return { success: true };
+  return { success: true as const };
 }

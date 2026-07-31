@@ -5,7 +5,6 @@ import { mergeProps } from "@base-ui/react/merge-props"
 import { useRender } from "@base-ui/react/use-render"
 import { cva, type VariantProps } from "class-variance-authority"
 
-import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -31,6 +30,26 @@ const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+const MOBILE_BREAKPOINT = 768
+
+function useIsMobile() {
+  const getSnapshot = React.useCallback(() => {
+    if (typeof window === "undefined") return false
+
+    return window.innerWidth < MOBILE_BREAKPOINT
+  }, [])
+
+  return React.useSyncExternalStore(
+    (onStoreChange) => {
+      const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+      mql.addEventListener("change", onStoreChange)
+
+      return () => mql.removeEventListener("change", onStoreChange)
+    },
+    getSnapshot,
+    getSnapshot,
+  )
+}
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed"

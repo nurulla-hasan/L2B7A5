@@ -7,7 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ConfirmationModal } from "@/components/common/confirmation-modal";
-import { ErrorToast, formatDate, formatPrice, timeAgo } from "@/lib/utils";
+import {
+  ErrorToast,
+  SuccessToast,
+  formatDate,
+  formatPrice,
+  timeAgo,
+} from "@/lib/utils";
 import {
   BOOKING_STATUS_VARIANT,
   BOOKING_STATUS_LABEL,
@@ -32,6 +38,8 @@ export function BookingCard({ booking }: { booking: BookingWithService }) {
       const result = await cancelBookingAction(booking.id);
       if (result && !result.success) {
         ErrorToast(result.message);
+      } else {
+        SuccessToast("Booking cancelled");
       }
     });
   }

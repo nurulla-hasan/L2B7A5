@@ -39,7 +39,7 @@ type BookingFormProps = {
 
 export function BookingForm({ service }: BookingFormProps) {
   const router = useRouter();
-  const tomorrow = useMemo(() => getTomorrow(), []);
+  const tomorrow = getTomorrow();
   const availability = service.technician?.technicianProfile?.availability;
 
   const {
@@ -75,7 +75,7 @@ export function BookingForm({ service }: BookingFormProps) {
     const result = await createBookingAction(data);
 
     if (result?.success === false) {
-      setSubmitError(result.message || "Failed to create booking.");
+      setSubmitError(result.message);
       return;
     }
 
@@ -185,8 +185,10 @@ export function BookingForm({ service }: BookingFormProps) {
                               const d = String(date.getDate()).padStart(2, "0");
                               onChange(`${y}-${m}-${d}`);
                               setValue("timeSlot", "");
+                              setSubmitError(null);
                             } else {
                               onChange("");
+                              setSubmitError(null);
                             }
                           }}
                           disabled={(date) => date < tomorrow}
@@ -222,7 +224,10 @@ export function BookingForm({ service }: BookingFormProps) {
                               <Button
                                 key={slot}
                                 type="button"
-                                onClick={() => onChange(slot)}
+                                onClick={() => {
+                                  onChange(slot);
+                                  setSubmitError(null);
+                                }}
                                 className={`${
                                   isSelected
                                     ? "border-primary bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20"

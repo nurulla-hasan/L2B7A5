@@ -57,7 +57,7 @@ export default async function CreateBookingPage({
         ]}
       />
 
-      {/* ── Modern Hero Banner Header ────────────────────────── */}
+      {/* -------- Hero Banner Header -------- */}
       <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-linear-to-br from-primary/10 via-background to-primary/5 p-6 md:p-8 mt-2 mb-8 shadow-xs">
         <div className="absolute -right-12 -top-12 size-48 rounded-full bg-primary/10 blur-3xl" />
         <div className="relative z-10 max-w-2xl space-y-3">
@@ -87,7 +87,7 @@ export default async function CreateBookingPage({
         </div>
       </div>
 
-      {/* ── Booking Form ────────────────────────────────────── */}
+      {/* -------- Booking Form -------- */}
       <BookingForm service={service} />
     </PageWrapper>
   );
