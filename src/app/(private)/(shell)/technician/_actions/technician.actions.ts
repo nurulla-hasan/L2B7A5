@@ -2,7 +2,6 @@
 
 import { updateTag, refresh } from "next/cache";
 import { CACHE_TAGS } from "@/lib/cache-tags";
-import { getValidAccessToken } from "@/lib/getValidAccessToken";
 import {
   updateTechnicianProfile,
   updateTechnicianAvailability,
@@ -13,20 +12,12 @@ import {
   updateService,
   deleteService,
 } from "@/services/service.service";
-import { getAllCategories } from "@/services/category.service";
-
-export async function getCategoriesAction() {
-  return await getAllCategories();
-}
 
 export async function updateProfileAction(data: {
   skills: string;
   experience: string;
   pricing: number;
 }) {
-  const auth = await getValidAccessToken();
-  if (!auth.ok) return { success: false as const, message: auth.message };
-
   const result = await updateTechnicianProfile(data);
   if (!result.success) return { success: false as const, message: result.message };
 
@@ -38,9 +29,6 @@ export async function updateProfileAction(data: {
 export async function updateAvailabilityAction(
   availability: Record<string, string[]>,
 ) {
-  const auth = await getValidAccessToken();
-  if (!auth.ok) return { success: false as const, message: auth.message };
-
   const result = await updateTechnicianAvailability(availability);
   if (!result.success) return { success: false as const, message: result.message };
 
@@ -48,9 +36,6 @@ export async function updateAvailabilityAction(
 }
 
 export async function updateBookingStatusAction(id: string, status: string) {
-  const auth = await getValidAccessToken();
-  if (!auth.ok) return { success: false as const, message: auth.message };
-
   const result = await updateBookingStatus(id, status);
   if (!result.success) return { success: false as const, message: result.message };
 
@@ -65,9 +50,6 @@ export async function createServiceAction(data: {
   location: string;
   categoryId: string;
 }) {
-  const auth = await getValidAccessToken();
-  if (!auth.ok) return { success: false as const, message: auth.message };
-
   const result = await createService(data);
   if (!result.success) return { success: false as const, message: result.message };
 
@@ -84,9 +66,6 @@ export async function updateServiceAction(
     categoryId: string;
   }>,
 ) {
-  const auth = await getValidAccessToken();
-  if (!auth.ok) return { success: false as const, message: auth.message };
-
   const result = await updateService(id, data);
   if (!result.success) return { success: false as const, message: result.message };
 
@@ -96,9 +75,6 @@ export async function updateServiceAction(
 }
 
 export async function deleteServiceAction(id: string) {
-  const auth = await getValidAccessToken();
-  if (!auth.ok) return { success: false as const, message: auth.message };
-
   const result = await deleteService(id);
   if (!result.success) return { success: false as const, message: result.message };
 

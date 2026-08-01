@@ -52,15 +52,6 @@ const isExpired = (token: string): boolean => {
   return Date.now() / 1000 >= payload.exp;
 };
 
-const isExpiringSoon = (token: string): boolean => {
-  const payload = decodeToken(token);
-
-  if (!payload?.exp) return true;
-
-  // less than 1 hour (3600 seconds) remaining
-  return payload.exp - Date.now() / 1000 < 3600; 
-};
-
 const getRole = (token: string): UserRole | null => {
   const payload = decodeToken(token);
   const role = payload?.role as string;
@@ -89,8 +80,8 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
   const refreshToken = request.cookies.get("refreshToken")?.value;
   let newAccessToken: string | undefined = undefined;
 
-  // Try to refresh token if missing, expired, or expiring within 1 hour
-  if ((!accessToken || isExpired(accessToken) || isExpiringSoon(accessToken)) && refreshToken) {
+  // Try to refresh token if missing or expired
+  if ((!accessToken || isExpired(accessToken)) && refreshToken) {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const res = await fetch(`${apiUrl}/api/auth/refresh-token`, {

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 
 type AuthMode = "required" | "optional" | "none";
@@ -56,9 +57,98 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
 };
 
 const getAccessToken = async (): Promise<string | null> => {
-  const cookieStore = await cookies();
+  try {
+    const cookieStore = await cookies();
 
-  return cookieStore.get("accessToken")?.value ?? null;
+    return cookieStore.get("accessToken")?.value ?? null;
+  } catch {
+    // Thrown during static prerendering (DYNAMIC_SERVER_USAGE) — the page
+    // becomes dynamic, but there's no real cookie available at build time.
+    return null;
+  }
+};
+
+const isExpired = (token: string): boolean => {
+  try {
+    const { exp } = jwtDecode<{ exp?: number }>(token);
+    return typeof exp !== "number" || exp * 1000 <= Date.now();
+  } catch {
+    return true;
+  }
+};
+
+const setTokenCookies = async (
+  accessToken: string,
+  refreshToken?: string,
+): Promise<void> => {
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    path: "/",
+  };
+
+  try {
+    const cookieStore = await cookies();
+
+    cookieStore.set("accessToken", accessToken, cookieOptions);
+
+    if (refreshToken) {
+      cookieStore.set("refreshToken", refreshToken, cookieOptions);
+    }
+  } catch {
+    // `cookies().set()` is only allowed inside Server Actions / Route Handlers.
+    // During server component render the token still works for this request —
+    // the proxy refreshes the cookies again on the next request.
+  }
+};
+
+// Exchange the refresh token for a fresh access token, and persist the new
+// pair in cookies. Returns null when there is nothing to refresh with.
+const refreshAccessToken = async (): Promise<string | null> => {
+  let refreshToken: string | null = null;
+
+  try {
+    const cookieStore = await cookies();
+
+    refreshToken = cookieStore.get("refreshToken")?.value ?? null;
+  } catch {
+    return null;
+  }
+
+  if (!refreshToken) return null;
+
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!baseUrl) return null;
+
+  try {
+    const response = await fetch(
+      `${baseUrl.replace(/\/+$/, "")}/api/auth/refresh-token`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken }),
+        cache: "no-store",
+      },
+    );
+
+    const result = (await response.json().catch(() => null)) as {
+      data?: { accessToken?: string; refreshToken?: string };
+    } | null;
+
+    const newAccessToken = result?.data?.accessToken;
+
+    if (!response.ok || !newAccessToken) return null;
+
+    await setTokenCookies(newAccessToken, result.data?.refreshToken);
+
+    return newAccessToken;
+  } catch {
+    return null;
+  }
 };
 
 const parseJsonResponse = async (response: Response): Promise<unknown> => {
@@ -144,7 +234,13 @@ export const nextServerFetch = async <T>(
       };
     }
 
-    const accessToken = auth === "none" ? null : await getAccessToken();
+    // `auth: "required"` guarantees a valid (non-expired) token — refresh it
+    // when missing or expired, so callers don't have to do this themselves.
+    let accessToken = auth === "none" ? null : await getAccessToken();
+
+    if (auth === "required" && (!accessToken || isExpired(accessToken))) {
+      accessToken = await refreshAccessToken();
+    }
 
     if (auth === "required" && !accessToken) {
       return {

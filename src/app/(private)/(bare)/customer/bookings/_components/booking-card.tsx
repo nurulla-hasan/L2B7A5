@@ -131,7 +131,7 @@ export function BookingCard({ booking }: { booking: BookingWithService }) {
                 onConfirm={handleCancel}
               />
             )}
-            <BookingDetailModal bookingId={booking.id} />
+            <BookingDetailModal booking={booking} />
           </div>
         </div>
       </CardContent>

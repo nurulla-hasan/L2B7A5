@@ -35,9 +35,11 @@ export interface BookingWithRelations extends Booking {
 }
 
 export interface BookingWithService extends Booking {
-  service?: { id: string; name: string; price: string };
+  service?: { id: string; name: string; price: string; description?: string };
   technician?: { id: string; name: string; email: string };
-  payment?: unknown;
+  customer?: { id: string; name: string; email: string };
+  payment?: { id: string; status: string; amount?: string; method?: string } | null;
+  review?: { id: string; rating: number; comment?: string } | null;
 }
 
 export interface TechnicianBooking {
