@@ -2,7 +2,13 @@ import { getAllTechnicians } from "@/services/technician.service";
 import { TechnicianCard } from "./_component/technician-card";
 import { TechnicianFilter } from "./_component/technician-filter";
 import CustomBreadcrumb from "@/components/common/custom-breadcrumb";
-import { SlidersHorizontal, Sparkles, ShieldCheck, SearchX, Wrench } from "lucide-react";
+import {
+  SlidersHorizontal,
+  Sparkles,
+  ShieldCheck,
+  SearchX,
+  Wrench,
+} from "lucide-react";
 import type { TSearchParams } from "@/interface/global";
 import type { TechnicianWithProfile } from "@/interface/user";
 import { PageWrapper } from "@/components/common/page-wrapper";
@@ -18,8 +24,11 @@ export default async function TechniciansPage({
   // ------- Fetch filtered data from API ------,
   const techniciansRes = await getAllTechnicians(params);
 
-  const technicians: TechnicianWithProfile[] =
-    techniciansRes.success ? techniciansRes.data : [];
+  if (!techniciansRes.success) {
+    throw new Error(techniciansRes.message);
+  }
+
+  const technicians: TechnicianWithProfile[] = techniciansRes.data;
 
   return (
     <PageWrapper paddingSize="small">
@@ -45,7 +54,8 @@ export default async function TechniciansPage({
           </h1>
 
           <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Browse background-checked technicians near you, compare skills and upfront pricing, and book trusted professionals with confidence.
+            Browse background-checked technicians near you, compare skills and
+            upfront pricing, and book trusted professionals with confidence.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 pt-1 text-xs font-medium text-muted-foreground">
@@ -86,7 +96,10 @@ export default async function TechniciansPage({
               </p>
             </div>
 
-            <Badge variant="outline" className="hidden sm:inline-flex gap-1 text-xs font-normal">
+            <Badge
+              variant="outline"
+              className="hidden sm:inline-flex gap-1 text-xs font-normal"
+            >
               <SlidersHorizontal className="size-3 text-muted-foreground" />
               Filtered Results
             </Badge>
@@ -109,7 +122,8 @@ export default async function TechniciansPage({
                 No Technicians Match Your Search
               </h3>
               <p className="mt-1 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                We couldn&apos;t find any technicians matching your active filters. Try broadening your location or clearing price limits.
+                We couldn&apos;t find any technicians matching your active
+                filters. Try broadening your location or clearing price limits.
               </p>
             </div>
           )}

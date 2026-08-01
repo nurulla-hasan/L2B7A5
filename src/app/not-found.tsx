@@ -3,7 +3,7 @@ import { FrownIcon } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6">
+    <div className="flex screen-height flex-col items-center justify-center px-6">
       <div className="flex flex-col items-center gap-6 text-center">
         <div className="flex size-20 items-center justify-center rounded-full bg-muted">
           <FrownIcon className="size-10 text-muted-foreground" />

@@ -26,6 +26,11 @@ export default function RootError({
           An unexpected error occurred. Please try again or contact support if
           the problem persists.
         </p>
+        {error.message && (
+          <p className="max-w-md wrap-break-word rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-left text-sm text-destructive">
+            {error.message}
+          </p>
+        )}
         <Button onClick={reset} variant="default" className="mt-2">
           Try Again
         </Button>

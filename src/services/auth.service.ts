@@ -25,9 +25,3 @@ export function getMe() {
     next: { tags: [CACHE_TAGS.user], revalidate: CACHE_TIME.day },
   });
 }
-
-export function refreshToken() {
-  return nextServerFetch<{ accessToken: string }>("/api/auth/refresh-token", {
-    method: "POST",
-  });
-}

@@ -37,8 +37,11 @@ export default async function TechnicianDetailPage({
   const { id } = await params;
   const res = await getSingleTechnician(id);
 
-  if (!res.success || !res.data) {
-    notFound();
+  if (!res.success) {
+    if (res.statusCode === 404) {
+      notFound();
+    }
+    throw new Error(res.message);
   }
 
   const technician: TechnicianWithProfile = res.data;

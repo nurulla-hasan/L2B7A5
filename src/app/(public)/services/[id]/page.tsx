@@ -34,8 +34,11 @@ export default async function ServiceDetailPage({
   const { id } = await params;
   const res = await getSingleService(id);
 
-  if (!res.success || !res.data) {
-    notFound();
+  if (!res.success) {
+    if (res.statusCode === 404) {
+      notFound();
+    }
+    throw new Error(res.message);
   }
 
   const service: Service = res.data;

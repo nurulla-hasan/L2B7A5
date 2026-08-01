@@ -23,15 +23,22 @@ export default async function ServicesPage({
     getAllCategories(),
   ]);
 
-  const services: Service[] =
-    servicesRes.status === "fulfilled" && servicesRes.value.success
-      ? servicesRes.value.data
-      : [];
+  if (servicesRes.status === "rejected") {
+    throw servicesRes.reason;
+  }
+  if (!servicesRes.value.success) {
+    throw new Error(servicesRes.value.message);
+  }
 
-  const categories: Category[] =
-    categoriesRes.status === "fulfilled" && categoriesRes.value.success
-      ? categoriesRes.value.data
-      : [];
+  if (categoriesRes.status === "rejected") {
+    throw categoriesRes.reason;
+  }
+  if (!categoriesRes.value.success) {
+    throw new Error(categoriesRes.value.message);
+  }
+
+  const services: Service[] = servicesRes.value.data;
+  const categories: Category[] = categoriesRes.value.data;
 
   return (
     <PageWrapper paddingSize="small">
