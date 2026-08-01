@@ -3,23 +3,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { useState } from "react";
-import {
-  MoreHorizontal,
-  Calendar,
-  Clock,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { Calendar, Clock, CheckCircle, XCircle } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuGroup,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ErrorToast, formatPrice, SuccessToast } from "@/lib/utils";
 import type { TechnicianBooking, BookingStatus } from "@/interface/booking";
@@ -64,58 +50,62 @@ const ActionsCell = ({ booking }: { booking: TechnicianBooking }) => {
   };
 
   return (
-    <div className="flex justify-end">
-      <DropdownMenu>
-        <DropdownMenuTrigger className="mr-4" disabled={isUpdating}>
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-fit">
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>Update Status</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {booking.status === "REQUESTED" && (
-              <>
-                <DropdownMenuItem
-                  onClick={() => handleUpdateStatus("ACCEPTED")}
-                  className="cursor-pointer text-green-600 focus:text-green-600"
-                >
-                  <CheckCircle/> Accept
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleUpdateStatus("DECLINED")}
-                  className="cursor-pointer text-red-600 focus:text-red-600"
-                >
-                  <XCircle/> Decline
-                </DropdownMenuItem>
-              </>
-            )}
-            {booking.status === "PAID" && (
-              <DropdownMenuItem
-                onClick={() => handleUpdateStatus("IN_PROGRESS")}
-                className="cursor-pointer text-blue-600 focus:text-blue-600"
-              >
-                <Clock/> Start Progress
-              </DropdownMenuItem>
-            )}
-            {booking.status === "IN_PROGRESS" && (
-              <DropdownMenuItem
-                onClick={() => handleUpdateStatus("COMPLETED")}
-                className="cursor-pointer text-green-600 focus:text-green-600"
-              >
-                <CheckCircle/> Mark Completed
-              </DropdownMenuItem>
-            )}
-            {["ACCEPTED", "COMPLETED", "CANCELLED", "DECLINED"].includes(
-              booking.status,
-            ) ? (
-              <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                No actions available
-              </div>
-            ) : null}
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    <div className="flex justify-end gap-1.5">
+      {booking.status === "REQUESTED" && (
+        <>
+          <Button
+            variant="outline"
+            size="icon"
+            title="Accept"
+            disabled={isUpdating}
+            onClick={() => handleUpdateStatus("ACCEPTED")}
+            className="text-green-600 hover:text-green-600"
+          >
+            <CheckCircle />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            title="Decline"
+            disabled={isUpdating}
+            onClick={() => handleUpdateStatus("DECLINED")}
+            className="text-red-600 hover:text-red-600"
+          >
+            <XCircle />
+          </Button>
+        </>
+      )}
+      {booking.status === "PAID" && (
+        <Button
+          variant="outline"
+          size="icon"
+          title="Start Progress"
+          disabled={isUpdating}
+          onClick={() => handleUpdateStatus("IN_PROGRESS")}
+          className="text-blue-600 hover:text-blue-600"
+        >
+          <Clock />
+        </Button>
+      )}
+      {booking.status === "IN_PROGRESS" && (
+        <Button
+          variant="outline"
+          size="icon"
+          title="Mark Completed"
+          disabled={isUpdating}
+          onClick={() => handleUpdateStatus("COMPLETED")}
+          className="text-green-600 hover:text-green-600"
+        >
+          <CheckCircle />
+        </Button>
+      )}
+      {["ACCEPTED", "COMPLETED", "CANCELLED", "DECLINED"].includes(
+        booking.status,
+      ) ? (
+        <span className="px-2 py-1.5 text text-muted-foreground">
+          No actions available
+        </span>
+      ) : null}
     </div>
   );
 };
@@ -129,7 +119,7 @@ export const bookingColumns: ColumnDef<TechnicianBooking>[] = [
         <span className="font-medium text-foreground">
           {row.original.serviceName}
         </span>
-        <span className="text-sm font-semibold text-primary">
+        <span className="text font-semibold text-primary">
           {formatPrice(row.original.price)}
         </span>
       </div>
@@ -140,7 +130,7 @@ export const bookingColumns: ColumnDef<TechnicianBooking>[] = [
     header: "Customer",
     cell: ({ row }) => (
       <div className="flex flex-col gap-0.5">
-        <span className="text-sm font-medium">{row.original.customerName}</span>
+        <span className="text font-medium">{row.original.customerName}</span>
         <span className="text-xs text-muted-foreground">
           {row.original.customerEmail}
         </span>

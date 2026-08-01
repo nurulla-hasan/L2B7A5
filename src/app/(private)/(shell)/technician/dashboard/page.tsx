@@ -138,7 +138,7 @@ export default async function TechnicianDashboardPage() {
               </Button>
             </Link>
           </CardHeader>
-          <CardContent className="pt-5">
+          <CardContent>
             {stats?.upcomingAppointments?.length ? (
               <div className="space-y-5">
                 {stats.upcomingAppointments.map((appointment) => {
@@ -186,7 +186,7 @@ export default async function TechnicianDashboardPage() {
           <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 pb-4">
             <CardTitle className="text-lg">Recent Reviews</CardTitle>
           </CardHeader>
-          <CardContent className="pt-5">
+          <CardContent>
             {stats?.recentReviews?.length ? (
               <div className="space-y-5">
                 {stats.recentReviews.map((review) => (

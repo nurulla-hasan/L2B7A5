@@ -71,9 +71,8 @@ export function ServiceModal({
   }
 
   const trigger = isEdit ? (
-    <Button variant="ghost">
+    <Button variant="outline" size="icon" title="Edit Service">
       <Edit />
-      Edit Service
     </Button>
   ) : (
     <Button>

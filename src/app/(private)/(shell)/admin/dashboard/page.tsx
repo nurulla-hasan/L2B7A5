@@ -7,7 +7,6 @@ import {
   TrendingUp,
   ArrowRight,
   UserRound,
-  LayoutGrid,
   ListChecks,
 } from "lucide-react";
 import Link from "next/link";
@@ -16,17 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookingStatusBadge } from "@/components/common/booking-status-badge";
 import { formatDate, formatPrice } from "@/lib/utils";
-import type { BookingStatusCounts } from "@/interface/dashboard";
 
-const STATUS_ORDER: (keyof BookingStatusCounts)[] = [
-  "REQUESTED",
-  "ACCEPTED",
-  "PAID",
-  "IN_PROGRESS",
-  "COMPLETED",
-  "CANCELLED",
-  "DECLINED",
-];
 
 function StatCard({
   title,
@@ -87,7 +76,9 @@ export default async function AdminDashboardPage() {
               <Button size="sm">View All Bookings</Button>
             </Link>
             <Link href="/admin/users">
-              <Button size="sm" variant="outline">Manage Users</Button>
+              <Button size="sm" variant="outline">
+                Manage Users
+              </Button>
             </Link>
           </div>
         </div>
@@ -128,92 +119,64 @@ export default async function AdminDashboardPage() {
       {/* ── Recent Activity ──────────────────────────────── */}
       <div className="grid gap-5 md:grid-cols-2">
         {/* Recent Bookings */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 pb-4">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <ListChecks className="size-4 text-primary" /> Recent Bookings
-            </CardTitle>
-            <Link href="/admin/bookings">
-              <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs">
-                View All <ArrowRight className="size-3" />
-              </Button>
-            </Link>
-          </CardHeader>
-          <CardContent className="pt-5">
-            {stats?.recentBookings?.length ? (
-              <div className="space-y-4">
-                {stats.recentBookings.map((booking) => (
-                  <div
-                    key={booking.id}
-                    className="flex items-start justify-between gap-4"
-                  >
-                    <div className="min-w-0 space-y-1">
-                      <p className="truncate text-sm font-medium">
-                        {booking.service.name}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
-                        <span className="inline-flex items-center gap-1">
-                          <UserRound className="size-3" />
-                          {booking.customer.name}
-                        </span>
-                        <span className="inline-flex items-center gap-1">
-                          <TrendingUp className="size-3" />
-                          {booking.technician.name}
-                        </span>
-                        <span>{formatDate(booking.scheduleDate)}</span>
-                      </div>
-                    </div>
-                    <div className="flex shrink-0 flex-col items-end gap-1">
-                      <BookingStatusBadge status={booking.status} />
-                      <span className="text-xs font-semibold text-primary">
-                        {formatPrice(booking.service.price)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="py-6 text-center text-sm text-muted-foreground">
-                No bookings yet.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        <div className="space-y-5">
-          {/* Booking Status Overview */}
+        <div>
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 pb-4">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-border/40">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <LayoutGrid className="size-4 text-primary" /> Booking Status
+                <ListChecks className="size-4 text-primary" /> Recent Bookings
               </CardTitle>
+              <Link href="/admin/bookings">
+                <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs">
+                  View All <ArrowRight className="size-3" />
+                </Button>
+              </Link>
             </CardHeader>
-            <CardContent className="pt-5">
-              {statusCounts ? (
-                <div className="grid grid-cols-1 gap-2">
-                  {STATUS_ORDER.map((status) => (
+            <CardContent>
+              {stats?.recentBookings?.length ? (
+                <div className="space-y-4">
+                  {stats.recentBookings.map((booking) => (
                     <div
-                      key={status}
-                      className="flex items-center justify-between rounded-lg border border-border/50 px-3 py-2"
+                      key={booking.id}
+                      className="flex items-start justify-between gap-4"
                     >
-                      <BookingStatusBadge status={status} />
-                      <span className="text-sm font-semibold">
-                        {statusCounts[status]}
-                      </span>
+                      <div className="min-w-0 space-y-1">
+                        <p className="truncate text-sm font-medium">
+                          {booking.service.name}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+                          <span className="inline-flex items-center gap-1">
+                            <UserRound className="size-3" />
+                            {booking.customer.name}
+                          </span>
+                          <span className="inline-flex items-center gap-1">
+                            <TrendingUp className="size-3" />
+                            {booking.technician.name}
+                          </span>
+                          <span>{formatDate(booking.scheduleDate)}</span>
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <BookingStatusBadge status={booking.status} />
+                        <span className="text-xs font-semibold text-primary">
+                          {formatPrice(booking.service.price)}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
               ) : (
                 <p className="py-6 text-center text-sm text-muted-foreground">
-                  No booking data available.
+                  No bookings yet.
                 </p>
               )}
             </CardContent>
           </Card>
+        </div>
 
+        <div className="space-y-5">
           {/* Recent Users */}
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 pb-4">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-border/40">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Users className="size-4 text-primary" /> New Users
               </CardTitle>
@@ -223,7 +186,7 @@ export default async function AdminDashboardPage() {
                 </Button>
               </Link>
             </CardHeader>
-            <CardContent className="pt-5">
+            <CardContent>
               {stats?.recentUsers?.length ? (
                 <div className="space-y-3">
                   {stats.recentUsers.map((user) => (
