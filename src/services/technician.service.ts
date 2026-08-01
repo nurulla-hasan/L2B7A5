@@ -3,8 +3,15 @@ import { nextServerFetch } from "@/lib/nextServerFetch";
 import { CACHE_TAGS, CACHE_TIME } from "@/lib/cache-tags";
 import type { TechnicianWithProfile, TechnicianProfile } from "@/interface/user";
 import type { Booking, TechnicianBooking } from "@/interface/booking";
+import type { TechnicianDashboardStats } from "@/interface/dashboard";
 import type { TQuery } from "@/interface/global";
 import { buildQueryString } from "@/lib/buildQueryString";
+
+export function getTechnicianDashboardStats() {
+  return nextServerFetch<TechnicianDashboardStats>(
+    "/api/technician/dashboard/stats",
+  );
+}
 
 export function getAllTechnicians(query: TQuery = {}) {
   const params = buildQueryString(query);

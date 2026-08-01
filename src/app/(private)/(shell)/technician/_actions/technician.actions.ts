@@ -14,6 +14,7 @@ import {
 } from "@/services/service.service";
 
 export async function updateProfileAction(data: {
+  name: string;
   skills: string;
   experience: string;
   pricing: number;
@@ -32,6 +33,7 @@ export async function updateAvailabilityAction(
   const result = await updateTechnicianAvailability(availability);
   if (!result.success) return { success: false as const, message: result.message };
 
+  updateTag(CACHE_TAGS.user);
   return { success: true as const };
 }
 

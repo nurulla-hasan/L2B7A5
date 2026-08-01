@@ -1,17 +1,34 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  CalendarCheck, 
-  CircleDollarSign, 
-  Star, 
+import { getTechnicianDashboardStats } from "@/services/technician.service";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  CalendarCheck,
+  CircleDollarSign,
+  Star,
   Wrench,
   Clock,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { BookingStatusBadge } from "@/components/common/booking-status-badge";
+import { format } from "date-fns";
+import { formatPrice } from "@/lib/utils";
 
-export default function TechnicianDashboardPage() {
+export default async function TechnicianDashboardPage() {
+  const result = await getTechnicianDashboardStats();
+  const stats = result.success ? result.data : null;
+  const totals = stats?.totals;
+
+  const pendingBookings = totals?.pendingBookings ?? 0;
+  const earnings = totals?.earnings ?? 0;
+  const averageRating = totals?.averageRating ?? 0;
+  const reviewCount = totals?.reviewCount ?? 0;
+
   return (
     <div className="space-y-6">
       {/* ── Welcome Banner ───────────────────────────────── */}
@@ -22,14 +39,28 @@ export default function TechnicianDashboardPage() {
             Welcome back, Technician! 👋
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base max-w-2xl">
-            Here&apos;s what&apos;s happening with your services today. You have <span className="font-semibold text-foreground">2 pending bookings</span> that require your attention.
+            {pendingBookings > 0 ? (
+              <>
+                Here&apos;s what&apos;s happening with your services today. You
+                have{" "}
+                <span className="font-semibold text-foreground">
+                  {pendingBookings} pending booking
+                  {pendingBookings > 1 ? "s" : ""}
+                </span>{" "}
+                that require your attention.
+              </>
+            ) : (
+              "All caught up! No pending bookings right now. Here&apos;s a snapshot of your services."
+            )}
           </p>
           <div className="mt-5 flex items-center gap-3">
             <Link href="/technician/bookings">
               <Button size="sm">View Bookings</Button>
             </Link>
             <Link href="/technician/services">
-              <Button size="sm" variant="outline">Manage Services</Button>
+              <Button size="sm" variant="outline">
+                Manage Services
+              </Button>
             </Link>
           </div>
         </div>
@@ -43,9 +74,11 @@ export default function TechnicianDashboardPage() {
             <CalendarCheck className="size-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">124</div>
+            <div className="text-2xl font-bold">
+              {totals?.bookings ?? 0}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
-              +14% from last month
+              {totals?.completedBookings ?? 0} completed
             </p>
           </CardContent>
         </Card>
@@ -56,7 +89,9 @@ export default function TechnicianDashboardPage() {
             <Wrench className="size-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5</div>
+            <div className="text-2xl font-bold">
+              {totals?.activeServices ?? 0}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
               Currently visible to customers
             </p>
@@ -69,9 +104,11 @@ export default function TechnicianDashboardPage() {
             <CircleDollarSign className="size-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$3,240</div>
+            <div className="text-2xl font-bold">
+              {formatPrice(String(earnings))}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
-              +$430 from last month
+              From completed payments
             </p>
           </CardContent>
         </Card>
@@ -82,9 +119,9 @@ export default function TechnicianDashboardPage() {
             <Star className="size-4 text-yellow-400 fill-yellow-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">4.8</div>
+            <div className="text-2xl font-bold">{averageRating}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              Based on 86 reviews
+              Based on {reviewCount} review{reviewCount === 1 ? "" : "s"}
             </p>
           </CardContent>
         </Card>
@@ -102,63 +139,94 @@ export default function TechnicianDashboardPage() {
             </Link>
           </CardHeader>
           <CardContent className="pt-5">
-            <div className="space-y-5">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex size-10 flex-col items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
-                      <span className="text-xs font-semibold leading-none">OCT</span>
-                      <span className="text-sm font-bold leading-none">{12 + i}</span>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium leading-none">Home Deep Cleaning</p>
-                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Clock className="size-3" />
-                        <span>10:00 AM - 12:00 PM</span>
+            {stats?.upcomingAppointments?.length ? (
+              <div className="space-y-5">
+                {stats.upcomingAppointments.map((appointment) => {
+                  const date = new Date(appointment.scheduleDate);
+                  return (
+                    <div
+                      key={appointment.id}
+                      className="flex items-start justify-between gap-4"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex size-10 flex-col items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+                          <span className="text-xs font-semibold leading-none uppercase">
+                            {format(date, "MMM")}
+                          </span>
+                          <span className="text-sm font-bold leading-none">
+                            {format(date, "dd")}
+                          </span>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {appointment.service.name}
+                          </p>
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <Clock className="size-3" />
+                            <span>{appointment.timeSlot}</span>
+                            <span>·</span>
+                            <span>{appointment.customer.name}</span>
+                          </div>
+                        </div>
                       </div>
+                      <BookingStatusBadge status={appointment.status} />
                     </div>
-                  </div>
-                  <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-                    Upcoming
-                  </Badge>
-                </div>
-              ))}
-            </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                No upcoming appointments.
+              </p>
+            )}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between border-b border-border/40 pb-4">
             <CardTitle className="text-lg">Recent Reviews</CardTitle>
-            <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs">
-              View All <ArrowRight className="size-3" />
-            </Button>
           </CardHeader>
           <CardContent className="pt-5">
-            <div className="space-y-5">
-              {[1, 2].map((i) => (
-                <div key={i} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-medium">
-                        U{i}
+            {stats?.recentReviews?.length ? (
+              <div className="space-y-5">
+                {stats.recentReviews.map((review) => (
+                  <div key={review.id} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex size-6 items-center justify-center rounded-full bg-muted text-xs font-medium">
+                          {review.customerName.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="text-sm font-medium">
+                          {review.customerName}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          · {review.serviceName}
+                        </span>
                       </div>
-                      <span className="text-sm font-medium">User {i}</span>
+                      <div className="flex text-yellow-400">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`size-3 ${
+                              i < review.rating
+                                ? "fill-current"
+                                : "text-muted-foreground/30"
+                            }`}
+                          />
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex text-yellow-400">
-                      <Star className="size-3 fill-current" />
-                      <Star className="size-3 fill-current" />
-                      <Star className="size-3 fill-current" />
-                      <Star className="size-3 fill-current" />
-                      <Star className="size-3 fill-current" />
-                    </div>
+                    <p className="text-xs text-muted-foreground italic">
+                      &quot;{review.comment}&quot;
+                    </p>
                   </div>
-                  <p className="text-xs text-muted-foreground italic">
-                    &quot;Excellent service! Arrived on time and did a fantastic job. Highly recommended.&quot;
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                No reviews yet.
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>

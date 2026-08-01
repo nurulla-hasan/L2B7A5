@@ -4,6 +4,11 @@ import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { User } from "@/interface/user";
 import type { BookingWithRelations } from "@/interface/booking";
 import type { Category } from "@/interface/category";
+import type { AdminDashboardStats } from "@/interface/dashboard";
+
+export function getAdminDashboardStats() {
+  return nextServerFetch<AdminDashboardStats>("/api/admin/dashboard/stats");
+}
 
 export function getAllUsers() {
   return nextServerFetch<User[]>("/api/admin/users", {

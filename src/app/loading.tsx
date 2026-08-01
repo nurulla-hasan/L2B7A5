@@ -1,32 +1,32 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Logo } from "@/components/common/logo";
 
 export default function RootLoading() {
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Navbar skeleton */}
-      <header className="flex h-16 items-center gap-4 border-b px-6">
-        <Skeleton className="h-8 w-28" />
-        <div className="ml-auto flex items-center gap-3">
-          <Skeleton className="h-8 w-20 rounded-full" />
-          <Skeleton className="h-8 w-20 rounded-full" />
-        </div>
-      </header>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-background">
+      {/* Brand */}
+      <div className="animate-pulse">
+        <Logo size="lg" showText />
+      </div>
 
-      {/* Hero skeleton */}
-      <main className="flex-1">
-        <div className="flex flex-col items-center gap-6 px-6 pt-24 pb-16">
-          <Skeleton className="h-12 w-96" />
-          <Skeleton className="h-6 w-64" />
-          <Skeleton className="mt-4 h-12 w-80 rounded-full" />
+      {/* Loading indicator */}
+      <div className="flex flex-col items-center gap-5">
+        {/* Gradient ring */}
+        <div className="relative">
+          <div className="size-10 animate-spin rounded-full border-[3px] border-muted-foreground/15 border-t-primary border-r-yellow-500" />
+          <div className="absolute inset-0 m-auto size-2 rounded-full bg-primary/80" />
         </div>
 
-        {/* Cards skeleton */}
-        <div className="grid grid-cols-1 gap-6 px-6 pb-16 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-44 w-full rounded-xl" />
+        {/* Bouncing dots */}
+        <div className="flex items-center gap-1.5">
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="size-1.5 animate-bounce rounded-full bg-linear-to-br from-primary to-yellow-500"
+              style={{ animationDelay: `${i * 150}ms` }}
+            />
           ))}
         </div>
-      </main>
+      </div>
     </div>
   );
 }
