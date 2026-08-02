@@ -130,7 +130,10 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     if (!accessToken || isExpired(accessToken)) {
       const loginUrl = new URL("/login", request.url);
 
-      loginUrl.searchParams.set("callbackUrl", pathname);
+      loginUrl.searchParams.set(
+        "callbackUrl",
+        pathname + request.nextUrl.search,
+      );
 
       response = NextResponse.redirect(loginUrl);
     } else {
