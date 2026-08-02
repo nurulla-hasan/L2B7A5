@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { BookingStatusBadge } from "@/components/common/booking-status-badge";
 import { format } from "date-fns";
 import { formatPrice } from "@/lib/utils";
+import { cookies } from "next/headers";
+import { TechnicianProfilePrompt } from "./_components/technician-profile-prompt";
 
 export default async function TechnicianDashboardPage() {
   const result = await getTechnicianDashboardStats();
@@ -29,8 +31,15 @@ export default async function TechnicianDashboardPage() {
   const averageRating = totals?.averageRating ?? 0;
   const reviewCount = totals?.reviewCount ?? 0;
 
+  // Show the profile prompt only once (until the technician dismisses it)
+  const cookieStore = await cookies();
+  const promptSeen = cookieStore.get("fixitnow_technician_profile_prompt_seen")?.value;
+
   return (
     <div className="space-y-6">
+      {/* ── Onboarding Prompt (shows once) ──────────────── */}
+      <TechnicianProfilePrompt defaultOpen={!promptSeen} />
+
       {/* ── Welcome Banner ───────────────────────────────── */}
       <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-linear-to-br from-primary/10 via-background to-primary/5 p-6 md:p-8 shadow-xs">
         <div className="absolute -right-12 -top-12 size-48 rounded-full bg-primary/10 blur-3xl" />
