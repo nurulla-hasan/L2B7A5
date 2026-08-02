@@ -2,6 +2,18 @@
 
 A full-stack home service booking platform built with **Next.js 16**, **Tailwind CSS v4**, and **shadcn/ui**.
 
+## About
+
+**FixitNow** connects customers with verified local technicians (electricians, plumbers, AC repair, and more) for home services. Customers browse services and technicians, pick a time slot from the technician's weekly availability, book instantly, and pay online via **SSLCommerz**. Technicians manage their profiles, availability, and service listings from a dashboard. Admins oversee the platform — users, bookings, and service categories.
+
+Three role-based areas:
+
+| Role       | What they can do                                                              |
+| ---------- | ----------------------------------------------------------------------------- |
+| **Customer** | Browse services & technicians, book appointments, pay online, track bookings, leave reviews |
+| **Technician** | Manage profile, skills, pricing, weekly availability, services & incoming bookings |
+| **Admin**    | Dashboard analytics, manage users, bookings, and service categories           |
+
 ## Tech Stack
 
 | Tool                            | Purpose                              |
@@ -50,7 +62,7 @@ src/
 │   │   ├── page.tsx            # Landing page
 │   │   ├── services/           # Browse & detail services
 │   │   ├── technicians/        # Browse & detail technicians
-│   │   ├── payment/            # SSLCommerz callback pages (success/failed/cancelled)
+│   │   ├── payment/            # SSLCommerz callback pages (success/cancel)
 │   │   ├── about/
 │   │   ├── contact/
 │   │   ├── help/
