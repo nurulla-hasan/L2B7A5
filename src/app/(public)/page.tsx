@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { HeroSection } from "@/components/home/hero-section";
 import { ServiceCategories } from "@/components/home/service-categories";
 import { HowItWorks } from "@/components/home/how-it-works";
@@ -11,16 +10,14 @@ import { getAllCategories } from "@/services/category.service";
 
 export default async function HomePage() {
   const categoriesRes = await getAllCategories();
-  if(!categoriesRes.success) throw new Error(categoriesRes.message);
+  if (!categoriesRes.success) throw new Error(categoriesRes.message);
   const categoryNames = categoriesRes.success
     ? categoriesRes.data.map((cat) => cat.name)
     : [];
 
   return (
     <>
-      <Suspense>
-        <HeroSection categories={categoryNames} />
-      </Suspense>
+      <HeroSection categories={categoryNames} />
       <ServiceCategories />
       <HowItWorks />
       <FeaturedTechnicians />

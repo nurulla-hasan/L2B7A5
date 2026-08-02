@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,7 +14,6 @@ import {
 import { SectionWrapper } from "@/components/common/section-wrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useNextFilter } from "@/hooks/useNextFilter";
 import { InfoToast } from "@/lib/utils";
 
 const STATS = [
@@ -25,7 +25,16 @@ const STATS = [
 
 export function HeroSection({ categories }: { categories: string[] }) {
   const router = useRouter();
-  const { updateFilter, getFilter } = useNextFilter();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = () => {
+    const term = searchTerm.trim();
+    if (term) {
+      router.push(`/services?searchTerm=${encodeURIComponent(term)}`);
+    } else {
+      InfoToast("Please enter a service type");
+    }
+  };
   return (
     <SectionWrapper padding="lg" className="screen-height">
       <div className="flex flex-col items-center gap-10 lg:flex-row lg:gap-20">
@@ -66,7 +75,9 @@ export function HeroSection({ categories }: { categories: string[] }) {
             <div className="relative flex-1">
               <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                onChange={(e) => updateFilter("searchTerm", e.target.value)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 type="text"
                 size="lg"
                 placeholder='Search "Plumber", "Electrician"...'
@@ -76,14 +87,7 @@ export function HeroSection({ categories }: { categories: string[] }) {
             <Button
               size="lg"
               className="shrink-0 gap-1.5 w-full sm:w-auto"
-              onClick={() => {
-                const term = getFilter("searchTerm");
-                if (term) {
-                  router.push(`/services?searchTerm=${encodeURIComponent(term)}`);
-                } else {
-                  InfoToast("Please enter a service type");
-                }
-              }}
+              onClick={handleSearch}
             >
               Search
               <ArrowRight className="size-4" />
