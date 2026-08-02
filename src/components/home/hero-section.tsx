@@ -23,7 +23,7 @@ const STATS = [
   { value: "24/7", label: "Booking Support" },
 ];
 
-export function HeroSection() {
+export function HeroSection({ categories }: { categories: string[] }) {
   const router = useRouter();
   const { updateFilter, getFilter } = useNextFilter();
   return (
@@ -96,7 +96,7 @@ export function HeroSection() {
               <span className="mr-1.5 text-sm font-medium text-primary">
                 Trending
               </span>
-              {["Plumbing", "Electrical", "Cleaning", "Painting"].map((item) => (
+              {categories.slice(0, 5).map((item) => (
                 <span key={item} className="contents">
                   <span className="text-muted-foreground/15">/</span>
                   <Button

@@ -7,11 +7,20 @@ import { WhyFixItNow } from "@/components/home/why-fix-it-now";
 import { StatsSection } from "@/components/home/stats-section";
 import { Testimonials } from "@/components/home/testimonials";
 import { CTASection } from "@/components/home/cta-section";
+import { getAllCategories } from "@/services/category.service";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const categoriesRes = await getAllCategories();
+  if(!categoriesRes.success) throw new Error(categoriesRes.message);
+  const categoryNames = categoriesRes.success
+    ? categoriesRes.data.map((cat) => cat.name)
+    : [];
+
   return (
     <>
-      <Suspense><HeroSection /></Suspense>
+      <Suspense>
+        <HeroSection categories={categoryNames} />
+      </Suspense>
       <ServiceCategories />
       <HowItWorks />
       <FeaturedTechnicians />
