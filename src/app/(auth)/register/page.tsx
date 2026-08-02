@@ -12,14 +12,12 @@ import {
 } from "@/validation/auth.schema";
 import { registerAction } from "@/app/(auth)/_actions/auth.actions";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
+import { FormInput } from "@/components/common/form-input";
 import {
   Field,
   FieldLabel,
   FieldContent,
-  FieldError,
 } from "@/components/ui/field";
 import {
   Card,
@@ -30,7 +28,7 @@ import {
 } from "@/components/ui/card";
 
 export default function RegisterPage() {
-  const form = useForm<RegisterFormData>({
+  const {handleSubmit, control, formState: { isSubmitting } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
@@ -40,8 +38,6 @@ export default function RegisterPage() {
       role: "CUSTOMER",
     },
   });
-
-  const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(data: RegisterFormData) {
     const result = await registerAction(data);
@@ -61,11 +57,11 @@ export default function RegisterPage() {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Role Selection */}
           <Controller
             name="role"
-            control={form.control}
+            control={control}
             render={({ field }) => (
               <Field>
                 <FieldLabel>I want to join as</FieldLabel>
@@ -110,92 +106,42 @@ export default function RegisterPage() {
           />
 
           {/* Name */}
-          <Controller
+          <FormInput
+            control={control}
             name="name"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
-                <FieldContent>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    placeholder="John Doe"
-                    autoComplete="name"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </FieldContent>
-              </Field>
-            )}
+            label="Full Name"
+            placeholder="John Doe"
+            autoComplete="name"
           />
 
           {/* Email */}
-          <Controller
+          <FormInput
+            control={control}
             name="email"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                <FieldContent>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="email"
-                    placeholder="you@example.com"
-                    autoComplete="email"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </FieldContent>
-              </Field>
-            )}
+            label="Email"
+            placeholder="you@example.com"
+            type="email"
+            autoComplete="email"
           />
 
           {/* Password */}
-          <Controller
+          <FormInput
+            control={control}
             name="password"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                <FieldContent>
-                  <PasswordInput
-                    {...field}
-                    id={field.name}
-                    placeholder="••••••••"
-                    autoComplete="new-password"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </FieldContent>
-              </Field>
-            )}
+            label="Password"
+            placeholder="••••••••"
+            type="password"
+            autoComplete="new-password"
           />
 
           {/* Confirm Password */}
-          <Controller
+          <FormInput
+            control={control}
             name="confirmPassword"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
-                <FieldContent>
-                  <PasswordInput
-                    {...field}
-                    id={field.name}
-                    placeholder="••••••••"
-                    autoComplete="new-password"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </FieldContent>
-              </Field>
-            )}
+            label="Confirm Password"
+            placeholder="••••••••"
+            type="password"
+            autoComplete="new-password"
           />
 
           <Button

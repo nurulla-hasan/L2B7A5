@@ -1,16 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ModalWrapper } from "@/components/common/modal-wrapper";
+import { FormInput } from "@/components/common/form-input";
 import {
   createCategoryAction,
   updateCategoryAction,
 } from "../../_actions/admin.actions";
 import { SuccessToast, ErrorToast } from "@/lib/utils";
 import type { Category } from "@/interface/category";
+
+const categorySchema = z.object({
+  name: z.string().min(1, "Category name is required"),
+});
+
+type CategoryFormData = z.infer<typeof categorySchema>;
 
 export function CategoryModal({
   actionType,
@@ -20,28 +29,34 @@ export function CategoryModal({
   defaultData?: Category;
 }) {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState(defaultData?.name || "");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const isEdit = actionType === "edit";
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting, isValid },
+  } = useForm<CategoryFormData>({
+    resolver: zodResolver(categorySchema),
+    mode: "onChange",
+    defaultValues: {
+      name: defaultData?.name || "",
+    },
+  });
 
-    setIsSubmitting(true);
+  async function onSubmit(data: CategoryFormData) {
     const result = isEdit
-      ? await updateCategoryAction(defaultData!.id, name.trim())
-      : await createCategoryAction(name.trim());
-    setIsSubmitting(false);
+      ? await updateCategoryAction(defaultData!.id, data.name.trim())
+      : await createCategoryAction(data.name.trim());
 
     if (result?.success) {
       SuccessToast(isEdit ? "Category updated" : "Category created");
       setOpen(false);
-      setName(isEdit ? defaultData?.name || "" : "");
+      reset();
     } else {
       ErrorToast(result?.message || "Failed to save category");
     }
-  };
+  }
 
   return (
     <ModalWrapper
@@ -64,28 +79,22 @@ export function CategoryModal({
         )
       }
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="name" className="text-sm font-medium">
-            Category Name
-          </label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter category name"
-            className="mt-2"
-            autoFocus
-          />
-        </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <FormInput
+          control={control}
+          name="name"
+          label="Category Name"
+          placeholder="Enter category name"
+        />
         <div className="flex justify-end gap-2">
           <Button
             type="button"
             variant="outline"
             onClick={() => {
               setOpen(false);
-              setName(defaultData?.name || "");
+              reset();
             }}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
@@ -93,7 +102,7 @@ export function CategoryModal({
             type="submit"
             loading={isSubmitting}
             loadingText={isEdit ? "Updating..." : "Creating..."}
-            disabled={!name.trim()}
+            disabled={!isValid}
           >
             {isEdit ? "Update" : "Create"}
           </Button>

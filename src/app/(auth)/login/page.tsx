@@ -4,20 +4,12 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller } from "react-hook-form";
 import { ErrorToast } from "@/lib/utils";
 
 import { loginSchema, type LoginFormData } from "@/validation/auth.schema";
 import { loginAction } from "@/app/(auth)/_actions/auth.actions";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import {
-  Field,
-  FieldLabel,
-  FieldContent,
-  FieldError,
-} from "@/components/ui/field";
+import { FormInput } from "@/components/common/form-input";
 import {
   Card,
   CardHeader,
@@ -32,7 +24,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
 
-  const form = useForm<LoginFormData>({
+  const { handleSubmit, control, formState: { isSubmitting } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -40,7 +32,6 @@ function LoginForm() {
     },
   });
 
-  const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(data: LoginFormData) {
     const result = await loginAction(data, callbackUrl ?? undefined);
@@ -57,48 +48,23 @@ function LoginForm() {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <Controller
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <FormInput
+            control={control}
             name="email"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                <FieldContent>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    type="email"
-                    placeholder="you@example.com"
-                    autoComplete="email"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </FieldContent>
-              </Field>
-            )}
+            label="Email"
+            placeholder="you@example.com"
+            type="email"
+            autoComplete="email"
           />
 
-          <Controller
+          <FormInput
+            control={control}
             name="password"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                <FieldContent>
-                  <PasswordInput
-                    {...field}
-                    id={field.name}
-                    placeholder="••••••••"
-                    autoComplete="current-password"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </FieldContent>
-              </Field>
-            )}
+            label="Password"
+            placeholder="••••••••"
+            type="password"
+            autoComplete="current-password"
           />
 
           <Button

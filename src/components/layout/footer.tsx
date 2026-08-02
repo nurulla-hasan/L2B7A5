@@ -48,9 +48,9 @@ function LinkedInIcon(props: SVGProps<SVGSVGElement>) {
 }
 
 const socialLinks = [
-  { label: "Facebook", icon: FacebookIcon, href: "#" },
-  { label: "Instagram", icon: InstagramIcon, href: "#" },
-  { label: "LinkedIn", icon: LinkedInIcon, href: "#" },
+  { label: "Facebook", icon: FacebookIcon, href: "https://www.facebook.com/golap.hasan.315" },
+  { label: "Instagram", icon: InstagramIcon, href: "https://www.instagram.com/golap.hasan.315/" },
+  { label: "LinkedIn", icon: LinkedInIcon, href: "https://www.linkedin.com/in/nurulla-hasan" },
 ];
 
 export function Footer() {
@@ -72,6 +72,7 @@ export function Footer() {
                   <Link
                     key={s.label}
                     href={s.href}
+                    target="_blank"
                     aria-label={s.label}
                     className="flex size-9 items-center justify-center rounded-lg border text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
                   >
@@ -122,8 +123,8 @@ export function Footer() {
             <ul className="space-y-3">
               {[
                 { icon: MapPin, text: "Dhaka, Bangladesh" },
-                { icon: Phone, text: "+880 1700-000000" },
-                { icon: Mail, text: "hello@fixitnow.com" },
+                { icon: Phone, text: "+880 1750-974716" },
+                { icon: Mail, text: "nurullahasan.dev@gmail.com" },
               ].map((item) => {
                 const Icon = item.icon;
                 return (

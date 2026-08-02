@@ -9,6 +9,7 @@ import {
   FieldError,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Textarea } from "@/components/ui/textarea";
 
 interface FormInputProps<T extends FieldValues> {
@@ -17,6 +18,7 @@ interface FormInputProps<T extends FieldValues> {
   label: string;
   placeholder: string;
   type?: string;
+  autoComplete?: string;
 }
 
 export function FormInput<T extends FieldValues>({
@@ -25,6 +27,7 @@ export function FormInput<T extends FieldValues>({
   label,
   placeholder,
   type,
+  autoComplete,
 }: FormInputProps<T>) {
   return (
     <Controller
@@ -34,7 +37,14 @@ export function FormInput<T extends FieldValues>({
         <Field data-invalid={fieldState.invalid}>
           <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
           <FieldContent>
-            {type === "textarea" ? (
+            {type === "password" ? (
+              <PasswordInput
+                {...field}
+                id={field.name}
+                placeholder={placeholder}
+                autoComplete={autoComplete}
+              />
+            ) : type === "textarea" ? (
               <Textarea {...field} id={field.name} placeholder={placeholder} />
             ) : (
               <Input
@@ -42,6 +52,7 @@ export function FormInput<T extends FieldValues>({
                 id={field.name}
                 type={type || "text"}
                 placeholder={placeholder}
+                autoComplete={autoComplete}
               />
             )}
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
