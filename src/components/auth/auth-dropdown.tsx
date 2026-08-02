@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getInitials } from "@/lib/utils";
 import type { User } from "@/interface/user";
-import { customerLinks } from "@/components/layout/navbar/nav-links";
+import { customerLinks } from "@/constants/nav-links";
 
 export function AuthDropdown({
   user,

@@ -101,6 +101,12 @@ export function HeroSection() {
                   <span className="text-muted-foreground/15">/</span>
                   <Button
                     variant="ghost"
+                    nativeButton={false}
+                    render={
+                      <Link
+                        href={`/services?type=${encodeURIComponent(item)}`}
+                      />
+                    }
                     className="px-1.5 py-1 text-sm text-muted-foreground/70 transition-colors hover:text-foreground"
                   >
                     {item}

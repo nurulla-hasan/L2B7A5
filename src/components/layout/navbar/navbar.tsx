@@ -8,7 +8,7 @@ import { Logo } from "@/components/common/logo";
 import { ThemeToggle } from "@/components/common/theme-toggle";
 import { CONTAINER_MAX_WIDTH } from "@/components/common/page-wrapper";
 import { logoutAction } from "@/app/(auth)/_actions/auth.actions";
-import { publicNavLinks } from "./nav-links";
+import { publicNavLinks } from "../../../constants/nav-links";
 import { MobileDrawer } from "./mobile-drawer";
 import { AuthDropdown } from "@/components/auth/auth-dropdown";
 import type { User } from "@/interface/user";

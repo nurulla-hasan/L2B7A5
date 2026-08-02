@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { adminLinks, technicianLinks } from "@/components/layout/navbar/nav-links";
+import { adminLinks, technicianLinks } from "@/constants/nav-links";
 import {
   Sidebar,
   SidebarContent,

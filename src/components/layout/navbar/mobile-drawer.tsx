@@ -11,7 +11,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn, getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { publicNavLinks, customerLinks } from "./nav-links";
+import { publicNavLinks, customerLinks } from "../../../constants/nav-links";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/common/logo";
 import {

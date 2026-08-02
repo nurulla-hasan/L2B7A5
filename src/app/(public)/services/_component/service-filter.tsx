@@ -81,14 +81,13 @@ export function ServiceFilter({ categories }: ServiceFilterProps) {
         <div>
           <SearchInput
             filterKey="searchTerm"
-            debounce={300}
             placeholder="Search services…"
-            className="xl:max-w-full rounded-lg"
+            className="xl:max-w-full"
           />
         </div>
       </div>
 
-      <Separator className="bg-border/50" />
+      <Separator />
 
       {/* ── Category / Type ───────────────────────────────── */}
       <div className="grid gap-2">
@@ -130,7 +129,7 @@ export function ServiceFilter({ categories }: ServiceFilterProps) {
         </div>
       </div>
 
-      <Separator className="bg-border/50" />
+      <Separator />
 
       {/* ── Location ──────────────────────────────────────── */}
       <div className="grid gap-1.5">
@@ -144,7 +143,7 @@ export function ServiceFilter({ categories }: ServiceFilterProps) {
             className="pl-9 text-xs rounded-lg border-border/60"
             value={location}
             onChange={(e) =>
-              updateFilter("location", e.target.value || null)
+              updateFilter("location", e.target.value || null, { debounce: 300 })
             }
           />
           {location && (
@@ -159,7 +158,7 @@ export function ServiceFilter({ categories }: ServiceFilterProps) {
         </div>
       </div>
 
-      <Separator className="bg-border/50" />
+      <Separator />
 
       {/* ── Minimum Rating ────────────────────────────────── */}
       <div className="grid gap-1.5">
@@ -184,7 +183,7 @@ export function ServiceFilter({ categories }: ServiceFilterProps) {
         </div>
       </div>
 
-      <Separator className="bg-border/50" />
+      <Separator />
 
       {/* ── Price Range ───────────────────────────────────── */}
       <div className="grid gap-2">

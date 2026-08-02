@@ -74,14 +74,13 @@ export function TechnicianFilter() {
         <div>
           <SearchInput
             filterKey="searchTerm"
-            debounce={300}
             placeholder="Search by name or skill…"
-            className="xl:max-w-full rounded-lg"
+            className="xl:max-w-full"
           />
         </div>
       </div>
 
-      <Separator className="bg-border/50" />
+      <Separator />
 
       {/* ── Location ──────────────────────────────────────── */}
       <div className="grid gap-1.5">
@@ -92,10 +91,10 @@ export function TechnicianFilter() {
           <MapPin className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Enter area (e.g. Dhaka)"
-            className="pl-9 text-xs rounded-lg border-border/60"
+            className="pl-9 text-xs border-border/60"
             value={location}
             onChange={(e) =>
-              updateFilter("location", e.target.value || null)
+              updateFilter("location", e.target.value || null, { debounce: 300 })
             }
           />
           {location && (
@@ -110,7 +109,7 @@ export function TechnicianFilter() {
         </div>
       </div>
 
-      <Separator className="bg-border/50" />
+      <Separator />
 
       {/* ── Minimum Rating ────────────────────────────────── */}
       <div className="grid gap-1.5">
@@ -135,7 +134,7 @@ export function TechnicianFilter() {
         </div>
       </div>
 
-      <Separator className="bg-border/50" />
+      <Separator />
 
       {/* ── Price Range ───────────────────────────────────── */}
       <div className="grid gap-2">
