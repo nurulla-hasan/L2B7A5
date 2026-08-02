@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const COOKIE_NAME = "fixitnow_technician_profile_prompt_seen";
+const DAY_SECONDS = 60 * 60 * 24;
 
 export function TechnicianProfilePrompt({
   defaultOpen = false,
@@ -22,13 +23,24 @@ export function TechnicianProfilePrompt({
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
+  const setPromptCookie = (maxAge: number) => {
+    document.cookie = `${COOKIE_NAME}=1; path=/; max-age=${maxAge}; SameSite=Lax`;
+  };
+
   const dismiss = () => {
-    document.cookie = `${COOKIE_NAME}=1; path=/; max-age=31536000; SameSite=Lax`;
+    // Permanently hide (user chose to update their profile)
+    setPromptCookie(365 * DAY_SECONDS);
+    setOpen(false);
+  };
+
+  const dismissForNow = () => {
+    // Hide for 1 day — remind the technician again later
+    setPromptCookie(DAY_SECONDS);
     setOpen(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={(next) => !next && dismiss()}>
+    <Dialog open={open} onOpenChange={(next) => !next && dismissForNow()}>
       <DialogContent showCloseButton={false} className="sm:max-w-md">
         <DialogHeader>
           <div className="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -42,7 +54,7 @@ export function TechnicianProfilePrompt({
         </DialogHeader>
 
         <DialogFooter>
-          <Button variant="outline" onClick={dismiss}>
+          <Button variant="outline" onClick={dismissForNow}>
             Maybe Later
           </Button>
           <Button
