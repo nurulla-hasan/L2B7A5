@@ -1,4 +1,4 @@
-# Service Platform — Frontend
+# Fixitnow — Frontend
 
 A full-stack home service booking platform built with **Next.js 16**, **Tailwind CSS v4**, and **shadcn/ui**.
 
