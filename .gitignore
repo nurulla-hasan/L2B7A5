@@ -32,7 +32,7 @@ yarn-error.log*
 package-lock.json
 
 # env files (can opt-in for committing if needed)
-.env*
+.env
 
 # vercel
 .vercel
@@ -42,3 +42,6 @@ package-lock.json
 next-env.d.ts
 
 .vercel
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
