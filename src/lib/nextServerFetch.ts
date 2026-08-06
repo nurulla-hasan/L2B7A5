@@ -165,13 +165,7 @@ const parseJsonResponse = async (response: Response): Promise<unknown> => {
   try {
     return JSON.parse(responseText);
   } catch {
-    throw new ApiError(
-      "API returned an invalid JSON response",
-      response.status,
-      {
-        rawResponse: responseText.slice(0, 500),
-      },
-    );
+    return { message: responseText.trim().slice(0, 500) };
   }
 };
 
